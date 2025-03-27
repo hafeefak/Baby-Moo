@@ -14,6 +14,13 @@ import Orderlist from './assets/Pages/Orderlist'
 import Categorylist from './assets/Pages/Categorylist'
 import Search from './assets/Pages/Search'
 import Body from './assets/Pages/Body'
+import Adminprovider from './assets/Context/Admincontxt'
+import AdminLogin from './assets/Admin/Adminlogin';
+import Adminhome from './assets/Admin/Adminhome';
+import Adminprotect from './assets/Admin/Adminprotected';
+import Adminuser from './assets/Admin/Adminuser';
+import Adminproducts from './assets/Admin/Adminproducts';
+
 
 function App() {
   return (
@@ -21,6 +28,8 @@ function App() {
    
     <FetchContext>
       <Cartprovider>
+     <Adminprovider>
+  
     <Routes>
       <Route path="/" element={<Home/>}/>
       <Route path="/register" element={<Register/>} />
@@ -33,10 +42,32 @@ function App() {
       <Route path="/categorylist/:categoryName" element={<Categorylist/>}/>
       <Route path="/search" element={<Search/>}/>
       <Route path='/body' element ={<Body/>}/>
+      <Route path="/adminlogin" element={<AdminLogin/>} />
+      <Route path="/adminhome" element={
+        
+        <Adminprotect>
+        <Adminhome/>
+        </Adminprotect>} />
+        <Route path="/adminuser" element={
+          
+          <Adminprotect>
+          <Adminuser/>
+          </Adminprotect>
+          
+          } />
+        <Route path="/adminproduct" element={
+          
+          <Adminprotect>
+          <Adminproducts/>
+          </Adminprotect>
+          } />
+      
       
 
     </Routes>
-    <ToastContainer  autoClose={false}/>
+    <ToastContainer  autoClose={3000}/>
+    </Adminprovider>
+    
     </Cartprovider>
     </FetchContext>
     

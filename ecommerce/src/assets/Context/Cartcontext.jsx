@@ -9,6 +9,7 @@ export default function Cartprovider({ children }) {
     const [cart, setCart] = useState([]);
     const [cartCount, setCartCount] = useState(0);
     const id = localStorage.getItem("id");
+    console.log(id)
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -56,7 +57,7 @@ export default function Cartprovider({ children }) {
                     return;
                 }
                 updatedCart.push({ ...product, quantity: 1 })
-                toast.dismiss()
+                // toast.dismiss()
                 toast.success("item added to you cart", { autoClose: false})
                 setCart(updatedCart)
                 setCartCount(updatedCart.length)

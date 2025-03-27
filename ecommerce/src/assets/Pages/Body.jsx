@@ -2,36 +2,17 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
+
 export default function Body() {
     const navigate = useNavigate();
 
-    const handleShopClick = () => {
-        navigate('/products');
-    };
-
+    
     return (
-        <div className="w-screen min-h-screen">
+        <div className="w-screen   bottom-80 mt-30 mb-30 ">
             
-            <div
-                className="relative w-full h-screen bg-cover bg-center"
-                style={{ backgroundImage: "url(https://babymoo.in/cdn/shop/files/footwear_web.jpg?v=1694840774&width=3000)" }}
-            >
+            <div className="absolute inset-0 opacity-40"></div>
                 
-                <div className="absolute inset-0 opacity-40"></div>
-
-            
-                <button
-                    onClick={handleShopClick}
-                    className="absolute bottom-8 right-8 bg-pink-400 text-white py-2 px-6 sm:py-3 sm:px-8 rounded-lg text-sm sm:text-xl shadow-lg hover:bg-pink-500 transition-transform transform hover:scale-105"
-                >
-                    Explore
-                </button>
-
-               
-                
-            </div>
-
-            <div className="max-w-7xl mx-auto mt-16 text-center pb-14 px-4">
+                 <div className="max-w-7xl mx-auto mt-16 text-center  ">
                 <h2 className="text-xl sm:text-3xl font-bold mb-12 text-gray-800">
                     Explore Our Collection
                 </h2>

@@ -1,19 +1,22 @@
-import React, { useState,useContext } from 'react';
-import { FaSearch, FaUser, FaShoppingBasket, FaHeart, FaBars, FaTimes } from 'react-icons/fa';
+import React, { useState, useContext, useEffect } from 'react';
+import { FaSearch, FaUser, FaShoppingBasket } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { Cartcontext } from '../Context/Cartcontext';
 
-
-
 function Navbar() {
   const [search, setSearch] = useState('');
-  const {cartCount}=useContext(Cartcontext)
+  const { cartCount } = useContext(Cartcontext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [role, setRole] = useState(null);
   const navigate = useNavigate();
 
-  const username = localStorage.getItem('name');
 
-  console.log(cartCount,"cart")
+  useEffect(() => {
+    const storedRole = localStorage.getItem('role');
+    setRole(storedRole); 
+  }, []);
+
+  const username = localStorage.getItem('name');
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -27,23 +30,26 @@ function Navbar() {
     navigate('/orderlist');
   };
 
+  
+
   const handleLogIn = () => {
-    navigate("/userlogin");
+    navigate('/userlogin');
+  };
+
+  const handleAdminLogin = () => {
+    navigate('/adminlogin');
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('id');
-    localStorage.removeItem('name');
-    localStorage.removeItem('cartCount');
+    localStorage.clear(); 
     navigate('/userlogin');
   };
 
   return (
-    <nav className="bg-[#F5BAC7] shadow-md h-11 flex items-center justify-between px-6 lg:px-8 fixed w-full z-50 top-0 left-0">
-
-
+    <nav className="bg-[#F5BAC7] shadow-md  flex items-center justify-between px-6 lg:px-8 fixed w-full z-50 top-0 left-0">
+      
       <h3
-        className="font-bold text-white text-2xl lg:text-3xl text-white-600 cursor-pointer hover:text-pink-700 transition duration-300"
+        className="font-bold text-white text-2xl lg:text-3xl cursor-pointer hover:text-pink-700 transition duration-300"
         onClick={() => navigate('/')}
       >
         Baby Moo
@@ -64,7 +70,7 @@ function Navbar() {
         />
       </div>
 
-
+      
       <div className="relative cursor-pointer" onClick={() => navigate('/cart')}>
         <FaShoppingBasket />
         {cartCount > 0 && (
@@ -74,7 +80,7 @@ function Navbar() {
         )}
       </div>
 
-
+      
       <div className="relative">
         <div
           className="flex items-center cursor-pointer hover:text-indigo-600 transition duration-300"
@@ -85,29 +91,49 @@ function Navbar() {
             {username && <span className="ml-2 text-lg text-gray-700">{username}</span>}
           </div>
         </div>
+
         {isDropdownOpen && (
           <div className="absolute right-0 mt-2 bg-white border rounded shadow-lg w-40 z-50">
             <ul>
-              <li
-                className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-200"
-                onClick={handleOrders}
-              >
-                Orders
-              </li>
-              {username ? (
+             
+              {role === 'user' && (
+                <li
+                  className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-200"
+                  onClick={handleOrders}
+                >
+                  Orders
+                </li>
+              )}
+
+              
+
+            
+              {!username && (
+                <>
+                  <li
+                    className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-200"
+                    onClick={handleLogIn}
+                  >
+                    User Login
+                  </li>
+                  <li
+                    className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-200"
+                    onClick={handleAdminLogin}
+                  >
+                    Admin Login
+                  </li>
+                </>
+              )}
+
+            
+              {username && (
                 <li
                   className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-200"
                   onClick={handleLogout}
                 >
                   Logout
                 </li>
-              ) : (
-                <li
-                  className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-200"
-                  onClick={handleLogIn}
-                >
-                  Log In
-                </li>
+               
               )}
             </ul>
           </div>
@@ -118,4 +144,3 @@ function Navbar() {
 }
 
 export default Navbar;
-

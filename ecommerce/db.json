@@ -1,203 +1,14 @@
 {
   "users": [
     {
-      "id": "5073",
+      "id": "1914",
       "name": "Hafeefa",
       "username": "hafeefa",
       "email": "hafeefa123@gmail.com",
-      "password": "Hafeefa123",
+      "password": "Shanid123",
       "cart": [],
-      "order": [
-        {
-          "name": "Hafeefa",
-          "address": "bougainvilla",
-          "phonenumber": "",
-          "items": [
-            {
-              "id": "4",
-              "name": "Shoes",
-              "price": 640,
-              "quantity": 1,
-              "description": "Feetwell Shoes Colour Blocked LED Shoes - White & Yellow",
-              "category": "Magicalsteps",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/16012422a.webp"
-            },
-            {
-              "id": "5",
-              "name": "Shoes",
-              "price": 1101,
-              "quantity": 2,
-              "description": "Babyoye Striped Design Velcro Closure Sneaker Shoes - Brown & White",
-              "category": "Magicalsteps",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/18279557a.webp"
-            }
-          ],
-          "total": 2842
-        },
-        {
-          "name": "hafeefa",
-          "address": "ajjhjj",
-          "phonenumber": "",
-          "items": [
-            {
-              "id": "1",
-              "name": "Clogs with Strap Closure11",
-              "price": 580,
-              "quantity": 1,
-              "description": "Babyoye Clogs with Strap Closure & Applique - Beige",
-              "category": "Magicalsteps",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/15957689a.webp"
-            }
-          ],
-          "total": 580
-        }
-      ]
-    },
-    {
-      "id": "eeb9",
-      "name": "Hafeefa",
-      "username": "hafeeefa",
-      "email": "hafeefak2001@gmail.com",
-      "password": "Hafeefa123",
-      "cart": [],
-      "order": [
-        {
-          "name": "anzil",
-          "address": "knvfkjvjkndzklnvoixrsflk\n",
-          "phonenumber": "",
-          "items": [
-            {
-              "id": "16",
-              "name": "Mickey Mouse Cap",
-              "price": 436,
-              "quantity": 2,
-              "description": "Mickey Mouse Summer Cap - Red",
-              "category": "Cloths",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/15828049a.webp"
-            },
-            {
-              "id": "15",
-              "name": "Full sleeves T-Shirt",
-              "price": 500,
-              "quantity": 1,
-              "description": "Viscose Knit Full Sleeves Turtle Neck Solid Colour Winter T-Shirt - Ivory",
-              "category": "Cloths",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/18456076a.webp"
-            },
-            {
-              "id": "8acc",
-              "name": "Frock",
-              "price": 699,
-              "quantity": 1,
-              "description": "Woven Full Sleeves Checkered Frock with Bow Applique - Red",
-              "category": "Cloths",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/19029588a.webp"
-            }
-          ],
-          "total": 2071
-        },
-        {
-          "name": "vfdedf",
-          "address": "dvs",
-          "phonenumber": "",
-          "items": [
-            {
-              "id": "4",
-              "name": "Shoes",
-              "price": 640,
-              "quantity": 1,
-              "description": "Feetwell Shoes Colour Blocked LED Shoes - White & Yellow",
-              "category": "Magicalsteps",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/16012422a.webp"
-            }
-          ],
-          "total": 640
-        },
-        {
-          "name": "hafeefa ",
-          "address": "mk,;",
-          "phonenumber": "",
-          "items": [
-            {
-              "id": "7",
-              "name": "Pull Back Bike",
-              "price": 267,
-              "quantity": 1,
-              "description": "Centy Rugged Pull Back Bike - Brown",
-              "category": "toys",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/219x265/2901040a.webp"
-            }
-          ],
-          "total": 267
-        },
-        {
-          "name": "Hafeefa",
-          "address": "eefrgtr",
-          "items": [
-            {
-              "id": "2",
-              "name": "T-Shirts",
-              "price": 320,
-              "quantity": 4,
-              "description": "Babyhug Disney Cotton Knit Oversized Half Sleeves T-Shirt with Minnie Mouse Applique Detailing - White",
-              "category": "cloths",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/16195218a.webp"
-            },
-            {
-              "id": "4",
-              "name": "Shoes",
-              "price": 640,
-              "quantity": 1,
-              "description": "Feetwell Shoes Colour Blocked LED Shoes - White & Yellow",
-              "category": "Magicalsteps",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/16012422a.webp"
-            }
-          ],
-          "total": 1920
-        }
-      ]
-    },
-    {
-      "id": "7fc5",
-      "name": "lisna",
-      "username": "lisna",
-      "email": "lisna@gmail.com",
-      "password": "Lisna123",
-      "cart": [],
-      "order": [
-        {
-          "name": "lisna",
-          "address": "greenvilla",
-          "items": [
-            {
-              "id": "4",
-              "name": "Shoes",
-              "price": 640,
-              "quantity": 1,
-              "description": "Feetwell Shoes Colour Blocked LED Shoes - White & Yellow",
-              "category": "Magicalsteps",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/16012422a.webp"
-            }
-          ],
-          "total": 640
-        },
-        {
-          "name": "lis",
-          "address": "greenvilla",
-          "items": [
-            {
-              "id": "7",
-              "name": "Pull Back Bike",
-              "price": 267,
-              "quantity": 1,
-              "description": "Centy Rugged Pull Back Bike - Brown",
-              "category": "toys",
-              "url": "https://cdn.fcglcdn.com/brainbees/images/products/219x265/2901040a.webp"
-            }
-          ],
-          "total": 267
-        }
-      ]
+      "order": [],
+      "status": true
     }
   ],
   "products": [
@@ -223,7 +34,7 @@
       "id": "4",
       "name": "Shoes",
       "price": 640,
-      "quantity": 3,
+      "quantity": 4,
       "description": "Feetwell Shoes Colour Blocked LED Shoes - White & Yellow",
       "category": "Magicalsteps",
       "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/16012422a.webp"
@@ -232,7 +43,7 @@
       "id": "5",
       "name": "Shoes",
       "price": 1101,
-      "quantity": 23,
+      "quantity": 5,
       "description": "Babyoye Striped Design Velcro Closure Sneaker Shoes - Brown & White",
       "category": "Magicalsteps",
       "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/18279557a.webp"
@@ -241,7 +52,7 @@
       "id": "6",
       "name": "T-Shirts",
       "price": 380,
-      "quantity": 35,
+      "quantity": 8,
       "description": "Be Awara Half Sleeves Born To Game With Dice Printed Tee - Maroon",
       "category": "cloths",
       "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/14120409a.webp"
@@ -279,7 +90,7 @@
       "price": 199,
       "quantity": 50,
       "description": "Babyhug Disney Minnie Mouse Summer Cap - Peach",
-      "category": "Cloths",
+      "category": "cloths",
       "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/15828064a.webp"
     },
     {
@@ -315,7 +126,7 @@
       "price": 500,
       "quantity": 20,
       "description": "Viscose Knit Full Sleeves Turtle Neck Solid Colour Winter T-Shirt - Ivory",
-      "category": "Cloths",
+      "category": "cloths",
       "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/18456076a.webp"
     },
     {
@@ -324,17 +135,8 @@
       "price": 436,
       "quantity": 10,
       "description": "Mickey Mouse Summer Cap - Red",
-      "category": "Cloths",
+      "category": "cloths",
       "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/15828049a.webp"
-    },
-    {
-      "id": "17",
-      "name": "Baby elephant",
-      "price": 606,
-      "quantity": 10,
-      "description": "Baby Elephant Soft Toy with Attached Monkey",
-      "category": "toys",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/10305360b.webp"
     },
     {
       "id": "cac9",
@@ -351,7 +153,7 @@
       "price": 699,
       "quantity": 20,
       "description": "Woven Full Sleeves Checkered Frock with Bow Applique - Red",
-      "category": "Cloths",
+      "category": "cloths",
       "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/19029588a.webp"
     },
     {
@@ -360,17 +162,8 @@
       "price": 554,
       "quantity": 30,
       "description": "Seer Sucker Woven Half Sleeves Checks & Floral Embroidered Frock with Bloomer & Headband - Blue",
-      "category": "Cloths",
+      "category": "cloths",
       "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/16025215a.webp"
-    },
-    {
-      "id": "76a5",
-      "name": "Party Frock",
-      "price": 1699,
-      "quantity": 10,
-      "description": "Sleeveless Party Frock with Floral Applique - Pink",
-      "category": "Cloths",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/16144121a.webp"
     }
   ]
 }

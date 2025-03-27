@@ -18,7 +18,8 @@ function Register() {
         password:'',
         confirmpassword:'',
         cart:[],
-        order:[]
+        order:[],
+        status:true
      };
      const onSubmit=async(values,{resetForm})=>{
         try{

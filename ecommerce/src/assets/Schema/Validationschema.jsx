@@ -39,3 +39,20 @@ export const ordervalidationschema=()=>{
         
         })
     }
+
+    export const adminvalidationschema=()=>{
+       return  Yup.object({
+            email: Yup.string().required('Email is required'),
+            password: Yup.string()
+            .min(8,"Password must be atleast 8 characters")
+            .required('Password is required')
+          });
+        }    
+
+  export const productvalidationschema=()=>Yup.object({
+    name:Yup.string().required("name is required"),
+    price:Yup.string().required("price is required"),
+    quantity:Yup.string().required("quantity is required"),
+    category:Yup.string().required("category is required"),
+    url:Yup.string().required("image is required")
+  })

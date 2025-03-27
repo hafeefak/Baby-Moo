@@ -7,6 +7,7 @@ import Navbar from '../Components/Navbar'
 
 
 function Cart() {
+    
   const navigate=useNavigate()
   const{cart,getTotalPrice, updateCartItemQuantity,removeFromCart,}=useContext(Cartcontext)
   const userId=localStorage.getItem("id")
@@ -55,14 +56,14 @@ function Cart() {
 
                         <div className="flex items-center justify-center gap-2">
                             <button
-                                className="px-3 py-1 bg-gray-200  text-white rounded"
+                                className="px-3 py-1 bg-gray-200  text-black rounded"
                                 onClick={() => updateCartItemQuantity(item.id, item.quantity - 1)}
                             >
-                                -
+                            -
                             </button>
                             <span>{item.quantity}</span>
                             <button
-                                className="px-3 py-1 bg-gray-200 text-white rounded"
+                                className="px-3 py-1 bg-gray-200 text-black rounded"
                                 onClick={() => updateCartItemQuantity(item.id, item.quantity + 1)}
                             >
                                 +

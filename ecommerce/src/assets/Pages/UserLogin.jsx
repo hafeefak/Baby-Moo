@@ -28,8 +28,13 @@ function UserLogin() {
       );
 
       if (user) {
+          if(!user.status){
+                    toast.error('You are blocked')
+                    return;
+                  }
          localStorage.setItem('id', user.id)
         localStorage.setItem('name', user.name)
+        localStorage.setItem("role","user")
         toast.success(`Welcome, ${user.name}!`);
         navigate('/');
       } else {
