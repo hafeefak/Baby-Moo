@@ -11,7 +11,7 @@ function Adminhome() {
   const {productList} =useContext(Fetch)
   const [userCount,setUserCount]=useState([])
   const[statusCount,setStatusCount]=useState([])
-//   const [outofstock,setoutofstock]=useState([])
+  const [outofstock,setoutofstock]=useState([])
 
 useEffect(()=>{
   const Fetchusers=async()=>{
@@ -29,7 +29,20 @@ useEffect(()=>{
   Fetchusers();
 },[])
 
-
+useEffect(()=>{
+    const Fetchoutofstock = async () => {
+        try {
+          const response = await axios.get("http://localhost:5001/products");
+          const productsStock = response.data;
+          const outOfStock = productsStock.filter(product => product.quantity === 0).length;
+          setoutofstock(outOfStock);
+        } catch (error) {
+          console.error("Error fetching product stock:", error);
+        }
+      };
+      Fetchoutofstock()
+  
+},[])
 
 
 const salePrice=userCount.reduce((acc,cur)=>
@@ -66,6 +79,10 @@ const salePrice=userCount.reduce((acc,cur)=>
                 <div className="bg-white shadow-md rounded-lg p-4 text-center h-36 sm:h-40 flex flex-col justify-center">
                     <h2 className="text-lg font-semibold text-gray-700 sm:text-base lg:text-xl">Total Sales</h2>
                     <p className="text-xl font-bold text-gray-900 sm:text-lg lg:text-2xl">₹ {salePrice}</p>
+                </div>
+                <div className="bg-white shadow-md rounded-lg p-4 text-center h-36 sm:h-40 flex flex-col justify-center">
+                    <h2 className="text-lg font-semibold text-gray-700 sm:text-base lg:text-xl">outofstock products</h2>
+                    <p className="text-xl font-bold text-gray-900 sm:text-lg lg:text-2xl">{outofstock}</p>
                 </div>
                 
             </div>

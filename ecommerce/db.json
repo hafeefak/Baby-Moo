@@ -16,7 +16,7 @@
       "id": "1",
       "name": "Clogs with Strap Closure11",
       "price": 580,
-      "quantity": 152,
+      "quantity": 0,
       "description": "Babyoye Clogs with Strap Closure & Applique - Beige",
       "category": "Magicalsteps",
       "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/15957689a.webp"
@@ -155,15 +155,6 @@
       "description": "Woven Full Sleeves Checkered Frock with Bow Applique - Red",
       "category": "cloths",
       "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/19029588a.webp"
-    },
-    {
-      "id": "7ba0",
-      "name": "Floral Checked Frock",
-      "price": 554,
-      "quantity": 30,
-      "description": "Seer Sucker Woven Half Sleeves Checks & Floral Embroidered Frock with Bloomer & Headband - Blue",
-      "category": "cloths",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/16025215a.webp"
     }
   ]
 }
