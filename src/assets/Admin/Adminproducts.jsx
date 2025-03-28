@@ -8,7 +8,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik'
 
 function Adminproducts() {
   console.log("product")
-  const { product, categories, addProduct, deleteProduct, editProduct } = useContext(Admincontext)
+  const { product, categories, AddProduct, DeleteProduct, EditProduct } = useContext(Admincontext)
   const [addproduct, setaddproduct] = useState(false)
   const [editproduct, seteditproduct] = useState(null)
   const [filterproduct, setfilterproduct] = useState([])
@@ -24,14 +24,14 @@ function Adminproducts() {
   }
 
   const onSubmit = (values, { resetForm }) => {
-    addProduct(values)
+    AddProduct(values)
     resetForm()
     setaddproduct(false)
   }
 
   const editSubmit = (values, { resetForm }) => {
     console.log(values)
-    editProduct(values)
+    EditProduct(values)
     resetForm()
     seteditproduct(null)
   }
@@ -118,7 +118,7 @@ function Adminproducts() {
                       </button>
                       <button
                         className="bg-red-500 hover:bg-red-700 text-white font-semibold py-1 px-4 rounded w-20"
-                        onClick={() => deleteProduct(product.id)}
+                        onClick={() => DeleteProduct(product.id)}
                       >
                         Delete
                       </button>

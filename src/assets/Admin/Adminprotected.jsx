@@ -1,7 +1,9 @@
-import { Navigate } from "react-router-dom";
-export default function Adminprotect({children}){
+import { Navigate, Outlet } from "react-router-dom";
 
+const Adminprotect = ({children}) => {
+  const adminLogged = localStorage.getItem("adminLogged") === "true";
 
-        const isadmin=localStorage.getItem("isAdmin")==="true";
-        return  isadmin? children :<Navigate to ="/adminlogin" replace/>
-}   
+  return adminLogged ? children : <Navigate to="/adminlogin" />;
+};
+
+export default Adminprotect;

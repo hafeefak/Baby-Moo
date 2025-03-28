@@ -1,17 +1,20 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+
 function Adminnavbar() {
     const navigate = useNavigate();
-
+    
 
     const handleLogout = () => {
         console.log('User logged out');
         toast.success('Logged out successfully');
+      
 
-        localStorage.removeItem('isAdmin');
-        localStorage.removeItem('role');
+        localStorage.removeItem("adminLogged");
+
+       
 
         navigate('/adminlogin');
     };

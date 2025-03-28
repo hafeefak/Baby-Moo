@@ -77,7 +77,7 @@ const salePrice=userCount.reduce((acc,cur)=>
                     </button>
                 </div>
                 <div className="bg-white shadow-md rounded-lg p-4 text-center h-36 sm:h-40 flex flex-col justify-center">
-                    <h2 className="text-lg font-semibold text-gray-700 sm:text-base lg:text-xl">Total Sales</h2>
+                    <h2 className="text-lg font-semibold text-gray-700 sm:text-base lg:text-xl">Total Saleprice</h2>
                     <p className="text-xl font-bold text-gray-900 sm:text-lg lg:text-2xl">₹ {salePrice}</p>
                 </div>
                 <div className="bg-white shadow-md rounded-lg p-4 text-center h-36 sm:h-40 flex flex-col justify-center">

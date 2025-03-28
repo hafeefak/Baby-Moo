@@ -1,12 +1,14 @@
-import React from 'react';
+import React ,{useContext}from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { adminvalidationschema } from '../Schema/Validationschema';
 import '../styles/login.css';
+import { Admincontext } from '../Context/Admincontxt';
 
 function AdminLogin() {
   const navigate = useNavigate();
+    const{setLogged}=useContext(Admincontext)
 
  
   const initialValues = {
@@ -17,10 +19,10 @@ function AdminLogin() {
   const onSubmit = async (values) => {
     try {
       
-      if (values.email === 'hafeefak@gmail.com' && values.password === 'Hafeefa@123') {
-       
-        localStorage.setItem('isAdmin', 'true');
-        localStorage.setItem('role', 'admin'); 
+      if (values.email === 'hafeefak@gmail.com' && values.password === 'Hafeefa123') {
+    
+        localStorage.setItem("adminLogged", "true");
+
         toast.success(`Welcome, Admin!`);
         navigate('/adminhome');
       } else {

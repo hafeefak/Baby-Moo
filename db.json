@@ -7,20 +7,64 @@
       "email": "hafeefa123@gmail.com",
       "password": "Shanid123",
       "cart": [],
-      "order": [],
+      "order": [
+        {
+          "name": "dwd",
+          "address": "dsad",
+          "items": [
+            {
+              "id": "4",
+              "name": "Shoes",
+              "price": 640,
+              "quantity": 1,
+              "description": "Feetwell Shoes Colour Blocked LED Shoes - White & Yellow",
+              "category": "Magicalsteps",
+              "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/16012422a.webp"
+            },
+            {
+              "id": "5",
+              "name": "Shoes",
+              "price": 1101,
+              "quantity": 1,
+              "description": "Babyoye Striped Design Velcro Closure Sneaker Shoes - Brown & White",
+              "category": "Magicalsteps",
+              "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/18279557a.webp"
+            }
+          ],
+          "total": 1741
+        }
+      ],
       "status": true
+    },
+    {
+      "id": "b403",
+      "name": "Shanid",
+      "username": "shanid",
+      "email": "shanidvp@gmail.com",
+      "password": "Shanu123",
+      "cart": [],
+      "order": [
+        {
+          "name": "shanid",
+          "address": "greenvilla",
+          "items": [
+            {
+              "id": "f589",
+              "name": "Rohmber",
+              "price": 1000,
+              "quantity": 1,
+              "category": "cloths",
+              "url": "https://www.momshome.in/cdn/shop/files/19.png?v=1727938554",
+              "description": "White colour Romber-unisex"
+            }
+          ],
+          "total": 1000
+        }
+      ],
+      "status": false
     }
   ],
   "products": [
-    {
-      "id": "1",
-      "name": "Clogs with Strap Closure11",
-      "price": 580,
-      "quantity": 0,
-      "description": "Babyoye Clogs with Strap Closure & Applique - Beige",
-      "category": "Magicalsteps",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/15957689a.webp"
-    },
     {
       "id": "2",
       "name": "T-Shirts",

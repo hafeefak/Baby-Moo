@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Adminnavbar from './Adminnavbar'
 import { IoMdClose } from 'react-icons/io'
-let renderCount=0
+
 
 function Adminuser() {
-  renderCount++;
-  console.log("Component Renders: ", renderCount);
+ 
   const [users, setUsers] = useState([])
   const [userDetails, setUserDetails] = useState(null)
 
@@ -91,12 +90,12 @@ console.log(users)
                   <strong className="text-gray-700">Email:</strong> {userDetails.email}
                 </p>
               </div>
-              { userDetails&& userDetails.order&&  userDetails.order.length === 0 ? (
+              {  userDetails.order&&  userDetails.order.length === 0 ? (
                 <h3 className="text-center text-lg text-gray-500">No Orders Placed</h3>
               ) : (
                 <div className='bg-gray-200 p-6 space-y-4 rounded-lg '>
                   <h3 className="text-lg font-semibold  text-gray-700 mb-4">Order Details</h3>
-                  { userDetails&& userDetails.order&& userDetails.order.map((order, index) => (
+                  {  userDetails.order&& userDetails.order.map((order, index) => (
                     <div key={index} className="border rounded-lg p-4  shadow-sm bg-white space-y-4">
                       <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
                         Order {index + 1}

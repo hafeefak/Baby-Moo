@@ -44,17 +44,17 @@ function App() {
       <Route path='/body' element ={<Body/>}/>
       <Route path="/adminlogin" element={<AdminLogin/>} />
       <Route path="/adminhome" element={
-        
         <Adminprotect>
         <Adminhome/>
         </Adminprotect>} />
+
         <Route path="/adminuser" element={
-          
           <Adminprotect>
           <Adminuser/>
           </Adminprotect>
           
           } />
+          
         <Route path="/adminproduct" element={
           
           <Adminprotect>
@@ -70,7 +70,7 @@ function App() {
     
     </Cartprovider>
     </FetchContext>
-    
+    <ToastContainer  autoClose={3000}/>
       
     </>
   )

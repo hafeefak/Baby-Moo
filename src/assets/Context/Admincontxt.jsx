@@ -1,14 +1,12 @@
-import {useEffect ,useContext,createContext, useState} from "react"
+import {useEffect ,createContext, useState} from "react"
 import axios from "axios"
 import {toast} from "react-toastify"
 
-export      const Admincontext=createContext()
+export     const Admincontext=createContext()
 const Adminprovider=({children})=>{
     const[product,setProduct]=useState([])
     const[categories,setCategories]=useState([])
-    const [logged,setLogged]=useState(null)
-
-
+   
     useEffect(()=>{
         const Fetchdata=async ()=>{
             try{
@@ -26,11 +24,11 @@ const Adminprovider=({children})=>{
 
     },[])
 
-
-    const addProduct=async (newproduct)=>{
+    
+    const AddProduct=async (newproduct)=>{
         try{
-            await axios.post("http://localhost:5001/products",newproduct)
-            setProduct(prevProducts=>[...prevProducts,newproduct])
+            const response=await axios.post("http://localhost:5001/products",newproduct)
+            setProduct(prevProducts=>[...prevProducts,response.data])
             toast.success("new product added succesfully")
         }
         catch(error){
@@ -38,7 +36,7 @@ const Adminprovider=({children})=>{
         }
     }
 
-    const deleteProduct=async(id)=>{
+    const DeleteProduct=async(id)=>{
         try{
             await axios.delete(`http://localhost:5001/products/${id}`)
             const update=product.filter((item)=>item.id!==id)
@@ -50,7 +48,7 @@ const Adminprovider=({children})=>{
     }
     }
 
-    const editProduct=async(product)=>{
+    const EditProduct=async(product)=>{
         try{
             const id=product.id 
             const response=await axios.put(`http://localhost:5001/products/${id}`,product)
@@ -65,13 +63,12 @@ const Adminprovider=({children})=>{
 
    return (
     <Admincontext.Provider value={{
-        logged,
-        setLogged,
+        
         product,
         categories,
-        addProduct,
-        deleteProduct,
-        editProduct
+        AddProduct,
+        DeleteProduct,
+        EditProduct
 
     }}>
         {children}
