@@ -109,7 +109,7 @@ function Adminproducts() {
                     <img className="w-24 h-24 object-cover rounded" src={product.url} alt={product.name} />
                   </td>
                   <td className="px-6 py-2 text-md text-center">
-                    <div className='flex flex-col items-center space-y-2'>
+                    <div className='flex flex-col items-center space-y-2 gap-2'>
                       <button
                         className="bg-green-500 hover:bg-green-700 text-white font-semibold py-1 px-4 rounded w-20"
                         onClick={() => seteditproduct(product)}

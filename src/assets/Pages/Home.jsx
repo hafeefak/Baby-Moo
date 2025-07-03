@@ -1,25 +1,21 @@
 
 import React from "react";
-import Navbar from '../Components/Navbar'
-
+import Navbar from '../Components/Navbar';
 import Footer from "../Components/Footer";
-
 import Body from "./Body";
 import ImageSlider from "./Imageslider";
-
-
+import TrendingProducts from "./TrendingProducts";
 
 function Home() {
-
-
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <ImageSlider/>
-       <Body />
-       
-       <Footer />
-       
+      <main className="flex-grow">
+        <ImageSlider/>
+        <TrendingProducts />
+        <Body />
+      </main>
+      <Footer />
     </div>
   );
 }

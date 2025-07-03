@@ -6,7 +6,63 @@
       "username": "hafeefa",
       "email": "hafeefa123@gmail.com",
       "password": "Shanid123",
-      "cart": [],
+      "cart": [
+        {
+          "id": "3",
+          "name": "Premium Swaddle Blanket",
+          "price": 899,
+          "quantity": 1,
+          "description": "Breathable muslin swaddle blanket with cute animal prints",
+          "category": "cloths",
+          "url": "https://www.momshome.in/cdn/shop/files/5_5d96f08c-6a64-4f7c-b986-f5f7cf9b8375.png?v=1730988020",
+          "rating": 4.9,
+          "trending": true
+        },
+        {
+          "id": "5",
+          "name": "Brown Sneaker Shoes",
+          "price": 1101,
+          "quantity": 1,
+          "description": "Babyoye Striped Design Velcro Closure Sneaker Shoes - Brown & White",
+          "category": "Magicalsteps",
+          "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/18279557a.webp",
+          "rating": 4.6,
+          "trending": false
+        },
+        {
+          "id": "14",
+          "name": "Bow Applique Booties",
+          "price": 500,
+          "quantity": 1,
+          "description": "infant Babyoye Booties with Velcro Closure Bow Applique",
+          "category": "Magicalsteps",
+          "url": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQN6mlBy2cTnOI7Pns4LOpcECYaNKeEzilTLjDDrdHvy5UJY4ajKCiVgUrdxZRuMgAfe6vB57rVZtp4vIBVYPnK7rv9CWUpZsZHEmW5-BMNauDLQupt__Gl",
+          "rating": 4.2,
+          "trending": false
+        },
+        {
+          "id": "20",
+          "name": "Personalized Baby Blanket",
+          "price": 899,
+          "quantity": 1,
+          "description": "Custom name embroidered ultra-soft minky dot blanket",
+          "category": "cloths",
+          "url": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQrLzSS1qoI02OqtnVYvCEJ99xTIhOlvdzyeSlzKtGxd-R2Ue4cqLFLVeLE-Dyl5C31oTEI6KqjBgaXhJH8-FJbSWGHUpfV4acu6QzsKz7ll3r0mPwRzryo",
+          "rating": 4.9,
+          "trending": true
+        },
+        {
+          "id": "7",
+          "name": "Pull Back Bike Toy",
+          "price": 267,
+          "quantity": 1,
+          "description": "Centy Rugged Pull Back Bike - Brown",
+          "category": "toys",
+          "url": "https://cdn.fcglcdn.com/brainbees/images/products/219x265/2901040a.webp",
+          "rating": 4.7,
+          "trending": true
+        }
+      ],
       "order": [
         {
           "name": "dwd",
@@ -42,7 +98,129 @@
       "username": "shanid",
       "email": "shanidvp@gmail.com",
       "password": "Shanu123",
-      "cart": [],
+      "cart": [
+        {
+          "id": "2",
+          "name": "Minnie Mouse T-Shirt",
+          "price": 320,
+          "quantity": 8,
+          "description": "Babyhug Disney Cotton Knit Oversized Half Sleeves T-Shirt with Minnie Mouse Applique Detailing - White",
+          "category": "cloths",
+          "url": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSxTHZvLkVQ9oFmUZvE4C4TBIN1LRJovHhlPbQPWR-PSzqYR5DMB3CT-NXIknrMVOo5uTr7ivA81UIH93C39BPdPrYcCWD7PNuGxBexl4N2",
+          "rating": 4.5,
+          "trending": true
+        },
+        {
+          "id": "6",
+          "name": "Born To Game T-Shirt",
+          "price": 380,
+          "quantity": 1,
+          "description": "Be Awara Half Sleeves Born To Game With Dice Printed Tee - Maroon",
+          "category": "cloths",
+          "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/14120409a.webp",
+          "rating": 4.2,
+          "trending": false
+        },
+        {
+          "id": "3",
+          "name": "Premium Swaddle Blanket",
+          "price": 899,
+          "quantity": 3,
+          "description": "Breathable muslin swaddle blanket with cute animal prints",
+          "category": "cloths",
+          "url": "https://www.momshome.in/cdn/shop/files/5_5d96f08c-6a64-4f7c-b986-f5f7cf9b8375.png?v=1730988020",
+          "rating": 4.9,
+          "trending": true
+        },
+        {
+          "id": "4",
+          "name": "LED Light-Up Shoes",
+          "price": 640,
+          "quantity": 4,
+          "description": "Feetwell Shoes Colour Blocked LED Shoes - White & Yellow",
+          "category": "Magicalsteps",
+          "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/16012422a.webp",
+          "rating": 4.3,
+          "trending": true
+        },
+        {
+          "id": "8",
+          "name": "Cement Mixer Truck Toy",
+          "price": 892,
+          "quantity": 2,
+          "description": "Yamama 6x6 Friction Cement Mixer Truck Toy - Blue",
+          "category": "toys",
+          "url": "https://cdn.fcglcdn.com/brainbees/images/products/219x265/9369799a.webp",
+          "rating": 4.4,
+          "trending": false
+        },
+        {
+          "id": "11",
+          "name": "Minnie Mouse Summer Cap",
+          "price": 199,
+          "quantity": 2,
+          "description": "Babyhug Disney Minnie Mouse Summer Cap - Peach",
+          "category": "cloths",
+          "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/15828064a.webp",
+          "rating": 4.1,
+          "trending": false
+        },
+        {
+          "id": "7",
+          "name": "Pull Back Bike Toy",
+          "price": 267,
+          "quantity": 1,
+          "description": "Centy Rugged Pull Back Bike - Brown",
+          "category": "toys",
+          "url": "https://cdn.fcglcdn.com/brainbees/images/products/219x265/2901040a.webp",
+          "rating": 4.7,
+          "trending": true
+        },
+        {
+          "id": "1",
+          "name": "Organic Cotton Bodysuit Set",
+          "price": 1299,
+          "quantity": 1,
+          "description": "3-piece set of ultra-soft organic cotton bodysuits with snap closures",
+          "category": "cloths",
+          "url": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcR6uB67wIQ_Di7Io2Wp6GLovh7lN08rhtRoMj2ARk11xH9PfC7HSy82-l94ijPPqqEjoWTl5KwzV0NBafp3_fxU_DgXUuWp8xvW4vCtSt-vo0xc8vTkXU8UFBY",
+          "rating": 4.8,
+          "trending": true
+        },
+        {
+          "id": "12",
+          "name": "Rabbit Sandals",
+          "price": 486,
+          "quantity": 1,
+          "description": "Beanz Rabbit Detailed Velcro Closure Sandals - Multi Color",
+          "category": "Magicalsteps",
+          "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/17937900a.webp",
+          "rating": 4.3,
+          "trending": false
+        },
+        {
+          "id": "f589",
+          "name": "Romper Set",
+          "price": 1000,
+          "quantity": 1,
+          "category": "cloths",
+          "url": "https://www.momshome.in/cdn/shop/files/19.png?v=1727938554",
+          "description": "White colour Romper-unisex",
+          "rating": 4.5,
+          "trending": false
+        },
+        {
+          "id": "17",
+          "name": "Musical Mobile Gym",
+          "price": 1599,
+          "quantity": 1,
+          "description": "Deluxe baby gym with detachable toys, music, and lights",
+          "category": "toys",
+          "url": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcR-Kx9-wPudZGvFgOlFod45IhXvofMm-19ZEPjubGUGgteKaG3f0MqoSBpFLpDUpV7fum_HDHGRLlmuopyOOcwIONXSsjFGhkpe6M0neYs",
+          "rating": 4.8,
+          "trending": true
+        }
+      ],
       "order": [
         {
           "name": "shanid",
@@ -61,90 +239,141 @@
           "total": 1000
         }
       ],
-      "status": false
+      "status": true
     }
   ],
   "products": [
     {
+      "id": "1",
+      "name": "Organic Cotton Bodysuit Set",
+      "price": 1299,
+      "quantity": 50,
+      "description": "3-piece set of ultra-soft organic cotton bodysuits with snap closures",
+      "category": "cloths",
+      "url": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcR6uB67wIQ_Di7Io2Wp6GLovh7lN08rhtRoMj2ARk11xH9PfC7HSy82-l94ijPPqqEjoWTl5KwzV0NBafp3_fxU_DgXUuWp8xvW4vCtSt-vo0xc8vTkXU8UFBY",
+      "rating": 4.8,
+      "trending": true
+    },
+    {
       "id": "2",
-      "name": "T-Shirts",
+      "name": "Minnie Mouse T-Shirt",
       "price": 320,
       "quantity": 100,
       "description": "Babyhug Disney Cotton Knit Oversized Half Sleeves T-Shirt with Minnie Mouse Applique Detailing - White",
       "category": "cloths",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/16195218a.webp"
+      "url": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSxTHZvLkVQ9oFmUZvE4C4TBIN1LRJovHhlPbQPWR-PSzqYR5DMB3CT-NXIknrMVOo5uTr7ivA81UIH93C39BPdPrYcCWD7PNuGxBexl4N2",
+      "rating": 4.5,
+      "trending": true
+    },
+    {
+      "id": "3",
+      "name": "Premium Swaddle Blanket",
+      "price": 899,
+      "quantity": 75,
+      "description": "Breathable muslin swaddle blanket with cute animal prints",
+      "category": "cloths",
+      "url": "https://www.momshome.in/cdn/shop/files/5_5d96f08c-6a64-4f7c-b986-f5f7cf9b8375.png?v=1730988020",
+      "rating": 4.9,
+      "trending": true
     },
     {
       "id": "4",
-      "name": "Shoes",
+      "name": "LED Light-Up Shoes",
       "price": 640,
       "quantity": 4,
       "description": "Feetwell Shoes Colour Blocked LED Shoes - White & Yellow",
       "category": "Magicalsteps",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/16012422a.webp"
+      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/16012422a.webp",
+      "rating": 4.3,
+      "trending": true
     },
     {
       "id": "5",
-      "name": "Shoes",
+      "name": "Brown Sneaker Shoes",
       "price": 1101,
       "quantity": 5,
       "description": "Babyoye Striped Design Velcro Closure Sneaker Shoes - Brown & White",
       "category": "Magicalsteps",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/18279557a.webp"
+      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/18279557a.webp",
+      "rating": 4.6,
+      "trending": false
     },
     {
       "id": "6",
-      "name": "T-Shirts",
+      "name": "Born To Game T-Shirt",
       "price": 380,
       "quantity": 8,
       "description": "Be Awara Half Sleeves Born To Game With Dice Printed Tee - Maroon",
       "category": "cloths",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/14120409a.webp"
+      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/14120409a.webp",
+      "rating": 4.2,
+      "trending": false
     },
     {
       "id": "7",
-      "name": "Pull Back Bike",
+      "name": "Pull Back Bike Toy",
       "price": 267,
       "quantity": 145,
       "description": "Centy Rugged Pull Back Bike - Brown",
       "category": "toys",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/219x265/2901040a.webp"
+      "url": "https://cdn.fcglcdn.com/brainbees/images/products/219x265/2901040a.webp",
+      "rating": 4.7,
+      "trending": true
     },
     {
       "id": "8",
-      "name": "Truck Toy",
+      "name": "Cement Mixer Truck Toy",
       "price": 892,
       "quantity": 125,
       "description": "Yamama 6x6 Friction Cement Mixer Truck Toy - Blue",
       "category": "toys",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/219x265/9369799a.webp"
+      "url": "https://cdn.fcglcdn.com/brainbees/images/products/219x265/9369799a.webp",
+      "rating": 4.4,
+      "trending": false
+    },
+    {
+      "id": "9",
+      "name": "Sensory Activity Cube",
+      "price": 1499,
+      "quantity": 30,
+      "description": "Wooden 5-in-1 educational activity cube with beads, gears, and shape sorting",
+      "category": "toys",
+      "url": "https://m.media-amazon.com/images/I/61Y9l04FHXL.jpg",
+      "rating": 4.9,
+      "trending": true
     },
     {
       "id": "10",
-      "name": "Block Sneakers",
+      "name": "Color Block Sneakers",
       "price": 974,
       "quantity": 43,
       "description": "Cute Walk by Babyhug Color Block Sneakers with Velcro - Light Green",
       "category": "Magicalsteps",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/17863092a.webp"
+      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/17863092a.webp",
+      "rating": 4.5,
+      "trending": false
     },
     {
       "id": "11",
-      "name": "Summer Cap",
+      "name": "Minnie Mouse Summer Cap",
       "price": 199,
       "quantity": 50,
       "description": "Babyhug Disney Minnie Mouse Summer Cap - Peach",
       "category": "cloths",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/15828064a.webp"
+      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/15828064a.webp",
+      "rating": 4.1,
+      "trending": false
     },
     {
       "id": "12",
-      "name": "Sandals-Multi Color",
+      "name": "Rabbit Sandals",
       "price": 486,
       "quantity": 130,
       "description": "Beanz Rabbit Detailed Velcro Closure Sandals - Multi Color",
       "category": "Magicalsteps",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/17937900a.webp"
+      "url": "https://cdn.fcglcdn.com/brainbees/images/products/300x364/17937900a.webp",
+      "rating": 4.3,
+      "trending": false
     },
     {
       "id": "13",
@@ -153,25 +382,31 @@
       "quantity": 30,
       "description": "Pre-Walking Baby Girl Sandals-Light Blue",
       "category": "Magicalsteps",
-      "url": "https://yobabyindia.in/cdn/shop/products/baby-girl-bow-sandals-light-blue-yo-baby-wholesale-543911.jpg?v=1623844100"
+      "url": "https://yobabyindia.in/cdn/shop/products/baby-girl-bow-sandals-light-blue-yo-baby-wholesale-543911.jpg?v=1623844100",
+      "rating": 4,
+      "trending": false
     },
     {
       "id": "14",
-      "name": "Baby girl shoes",
+      "name": "Bow Applique Booties",
       "price": 500,
       "quantity": 30,
       "description": "infant Babyoye Booties with Velcro Closure Bow Applique",
       "category": "Magicalsteps",
-      "url": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQN6mlBy2cTnOI7Pns4LOpcECYaNKeEzilTLjDDrdHvy5UJY4ajKCiVgUrdxZRuMgAfe6vB57rVZtp4vIBVYPnK7rv9CWUpZsZHEmW5-BMNauDLQupt__Gl"
+      "url": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQN6mlBy2cTnOI7Pns4LOpcECYaNKeEzilTLjDDrdHvy5UJY4ajKCiVgUrdxZRuMgAfe6vB57rVZtp4vIBVYPnK7rv9CWUpZsZHEmW5-BMNauDLQupt__Gl",
+      "rating": 4.2,
+      "trending": false
     },
     {
       "id": "15",
-      "name": "Full sleeves T-Shirt",
+      "name": "Winter T-Shirt",
       "price": 500,
       "quantity": 20,
       "description": "Viscose Knit Full Sleeves Turtle Neck Solid Colour Winter T-Shirt - Ivory",
       "category": "cloths",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/18456076a.webp"
+      "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/18456076a.webp",
+      "rating": 4.4,
+      "trending": false
     },
     {
       "id": "16",
@@ -180,16 +415,64 @@
       "quantity": 10,
       "description": "Mickey Mouse Summer Cap - Red",
       "category": "cloths",
-      "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/15828049a.webp"
+      "url": "https://cdn.fcglcdn.com/brainbees/images/products/583x720/15828049a.webp",
+      "rating": 4.3,
+      "trending": false
+    },
+    {
+      "id": "17",
+      "name": "Musical Mobile Gym",
+      "price": 1599,
+      "quantity": 25,
+      "description": "Deluxe baby gym with detachable toys, music, and lights",
+      "category": "toys",
+      "url": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcR-Kx9-wPudZGvFgOlFod45IhXvofMm-19ZEPjubGUGgteKaG3f0MqoSBpFLpDUpV7fum_HDHGRLlmuopyOOcwIONXSsjFGhkpe6M0neYs",
+      "rating": 4.8,
+      "trending": true
+    },
+    {
+      "id": "18",
+      "name": "Soft Sole Walking Shoes",
+      "price": 749,
+      "quantity": 40,
+      "description": "Flexible sole first walkers with breathable mesh - Navy Blue",
+      "category": "Magicalsteps",
+      "url": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQTWa6RYrQUZiYfil-fCJRbffb7d2H1Qx598XfTid-_PtWq3hTmod5aSpoa-sS1CgNImP40w1IqWE-nAWa3f_b6XKQOguUcDaouGmQyQCPLtVTycM55F7XFvA",
+      "rating": 4.7,
+      "trending": true
+    },
+    {
+      "id": "19",
+      "name": "Stacking Rings",
+      "price": 399,
+      "quantity": 60,
+      "description": "Colorful silicone stacking rings for motor skill development",
+      "category": "toys",
+      "url": "https://m.media-amazon.com/images/I/61zUEGxGG3L.jpg",
+      "rating": 4.6,
+      "trending": false
+    },
+    {
+      "id": "20",
+      "name": "Personalized Baby Blanket",
+      "price": 899,
+      "quantity": 15,
+      "description": "Custom name embroidered ultra-soft minky dot blanket",
+      "category": "cloths",
+      "url": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQrLzSS1qoI02OqtnVYvCEJ99xTIhOlvdzyeSlzKtGxd-R2Ue4cqLFLVeLE-Dyl5C31oTEI6KqjBgaXhJH8-FJbSWGHUpfV4acu6QzsKz7ll3r0mPwRzryo",
+      "rating": 4.9,
+      "trending": true
     },
     {
       "id": "f589",
-      "name": "Rohmber",
+      "name": "Romper Set",
       "price": 1000,
       "quantity": 8,
       "category": "cloths",
       "url": "https://www.momshome.in/cdn/shop/files/19.png?v=1727938554",
-      "description": "White colour Romber-unisex"
+      "description": "White colour Romper-unisex",
+      "rating": 4.5,
+      "trending": false
     }
   ]
 }

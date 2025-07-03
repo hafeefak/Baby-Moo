@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { IoMdClose } from 'react-icons/io';
+import { MdClose, MdShoppingCart } from 'react-icons/md';
+import { FaRupeeSign } from 'react-icons/fa';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Navbar from '../Components/Navbar';
@@ -7,100 +8,137 @@ import { Fetch } from '../Context/Fetchcontext';
 import { Cartcontext } from '../Context/Cartcontext';
 
 function Categorylist() {
-    const { addToCart } = useContext(Cartcontext);
-    const { productList } = useContext(Fetch);
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const { categoryName } = useParams();
-    const navigate = useNavigate();
+  const { addToCart } = useContext(Cartcontext);
+  const { productList } = useContext(Fetch);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const { categoryName } = useParams();
+  const navigate = useNavigate();
 
-    const id = localStorage.getItem("id");
+  const id = localStorage.getItem("id");
 
-  
-    const data = productList
-        ? productList.filter(
-            (item) =>
-                item.category &&
-                categoryName &&
-                item.category.toLowerCase() === categoryName.toLowerCase()
-        )
-        : [];
+  const data = productList
+    ? productList.filter(
+        (item) =>
+          item.category &&
+          categoryName &&
+          item.category.toLowerCase() === categoryName.toLowerCase()
+      )
+    : [];
 
-  
-    const openModal = (product) => {
-        setSelectedProduct(product);
-    };
+  const openModal = (product) => {
+    setSelectedProduct(product);
+  };
 
-    const closeModal = () => {
-        setSelectedProduct(null);
-    };
+  const closeModal = () => {
+    setSelectedProduct(null);
+  };
 
-    return (
-        <div>
-            <Navbar />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-24 pb-10 pl-6 pr-6">
-                {data.map((product) => (
-                    <div
-                        key={product.id}
-                        className="border rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
-                        onClick={() => openModal(product)}
-                    >
-                        <img
-                            src={product.url}
-                            alt={product.name}
-                            className="w-60 h-60 object-cover mx-auto mt-4 cursor-pointer rounded-t-lg"
-                        />
-                        <div className="text-center p-4">
-                            <h1 className="mt-2 text-base sm:text-lg font-semibold">{product.name}</h1>
-                            <p className="mt-1 text-gray-700">₹ {product.price}</p>
-                            {product.quantity === 0 && (
-                                <span className="text-red-500">Out of stock</span>
-                            )}
-                        </div>
-                    </div>
-                ))}
+  const handleAddToCart = (product) => {
+    if (id) {
+      addToCart(product);
+      toast.success(`${product.name} added to cart`);
+    } else {
+      navigate('/userlogin');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="container mx-auto px-4 py-8 mt-20">
+        {/* Grid: 4 cards in a row on large screens */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {data.map((product) => (
+            <div
+              key={product.id}
+              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+            >
+              <div onClick={() => openModal(product)} className="cursor-pointer">
+                <img
+                  src={product.url}
+                  alt={product.name}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate">{product.name}</h3>
+                  <p className="text-lg font-bold text-pink-600">
+                    <FaRupeeSign className="inline mr-1" />
+                    {Number(product.price).toFixed(2)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-4 pb-4">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddToCart(product);
+                  }}
+                  disabled={product.quantity === 0}
+                  className={`w-full flex items-center justify-center py-2 px-4 rounded-lg font-medium transition-colors ${
+                    product.quantity === 0
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-pink-500 text-white hover:bg-pink-600'
+                  }`}
+                >
+                  <MdShoppingCart className="mr-2" />
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Modal */}
+      {selectedProduct && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
+          <div className="bg-white rounded-xl relative max-w-md w-full flex flex-col">
+            {/* Close icon */}
+            <MdClose
+              className="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-800"
+              onClick={closeModal}
+              size={24}
+            />
+
+            {/* Content */}
+            <div className="p-6 flex-1  max-h-[80vh]">
+              <div className="mb-4">
+                <img
+                  src={selectedProduct.url}
+                  alt={selectedProduct.name}
+                  className="w-full h-60 object-cover rounded-lg"
+                />
+              </div>
+              <h2 className="text-2xl font-bold mb-2 text-gray-800">{selectedProduct.name}</h2>
+              <p className="text-gray-600 mb-4">{selectedProduct.description || "No description available."}</p>
+              <p className="text-l font-bold text-gray-500">Price</p>
+              <p className="text-xl font-bold text-pink-600 mb-6">
+                <FaRupeeSign className="inline mr-1" />
+                {Number(selectedProduct.price).toFixed(2)}
+              </p>
             </div>
 
-            {selectedProduct && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg p-4 sm:p-6 max-w-sm sm:max-w-md w-full relative flex flex-col items-center text-center">
-                        <IoMdClose
-                            onClick={closeModal}
-                            className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 cursor-pointer size-6"
-                        />
-                        <img
-                            src={selectedProduct.url}
-                            alt={selectedProduct.name}
-                            className="w-40 h-40 object-cover rounded-lg mb-4"
-                        />
-                        <h1 className="text-xl sm:text-2xl font-bold mb-4">{selectedProduct.name}</h1>
-                        <p className="text-gray-700 mb-2">₹ {selectedProduct.price}</p>
-                        <p className="text-gray-600 mb-4">
-                            {selectedProduct.description || "No description available."}
-                        </p>
-                        <p className="text-gray-600">Category: {selectedProduct.category}</p>
-                        {selectedProduct.quantity === 0 && (
-                            <span className="text-red-500">Out of stock</span>
-                        )}
-                        <button
-                            className="bg-fuchsia-300 text-white px-4 sm:px-6 py-2 rounded-lg shadow-md hover:bg-green-600 text-sm sm:text-base mt-4"
-                            onClick={() => {
-                                if (id) {
-                                    addToCart(selectedProduct);
-                                    toast.success("Item added to cart");
-                                    closeModal();
-                                } else {
-                                    navigate("/userlogin");
-                                }
-                            }}
-                            disabled={selectedProduct.quantity === 0}
-                        >
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-            )}
+            {/* Fixed Add to Cart button */}
+            <div className="border-t border-gray-200 px-6 py-4">
+              <button
+                onClick={() => handleAddToCart(selectedProduct)}
+                disabled={selectedProduct.quantity === 0}
+                className={`w-full flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-colors ${
+                  selectedProduct.quantity === 0
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-pink-500 text-white hover:bg-pink-600'
+                }`}
+              >
+                <MdShoppingCart className="mr-2" size={20} />
+                Add to Cart
+              </button>
+            </div>
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 }
 
 export default Categorylist;
