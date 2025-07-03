@@ -1,14 +1,16 @@
 import React, { useState, useContext } from 'react';
 import { MdClose, MdShoppingCart } from 'react-icons/md';
-import { FaRupeeSign } from 'react-icons/fa';
+import { FaRupeeSign, FaHeart } from 'react-icons/fa';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Navbar from '../Components/Navbar';
 import { Fetch } from '../Context/Fetchcontext';
 import { Cartcontext } from '../Context/Cartcontext';
+import { Wishlistcontext } from '../Context/Wishlistcontext';
 
 function Categorylist() {
   const { addToCart } = useContext(Cartcontext);
+  const { wishlist, addToWishlist, removeFromWishlist } = useContext(Wishlistcontext);
   const { productList } = useContext(Fetch);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { categoryName } = useParams();
@@ -24,6 +26,23 @@ function Categorylist() {
           item.category.toLowerCase() === categoryName.toLowerCase()
       )
     : [];
+
+  const isInWishlist = (productId) => wishlist.some(item => item.id === productId);
+
+  const toggleWishlist = (product, e) => {
+    e.stopPropagation();
+    if (id) {
+      if (isInWishlist(product.id)) {
+        removeFromWishlist(product.id);
+        toast.info(`${product.name} removed from wishlist`);
+      } else {
+        addToWishlist(product);
+        toast.success(`${product.name} added to wishlist`);
+      }
+    } else {
+      navigate('/userlogin');
+    }
+  };
 
   const openModal = (product) => {
     setSelectedProduct(product);
@@ -46,13 +65,22 @@ function Categorylist() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="container mx-auto px-4 py-8 mt-20">
-        {/* Grid: 4 cards in a row on large screens */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {data.map((product) => (
             <div
               key={product.id}
-              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 relative"
             >
+              {/* Heart icon on card */}
+              <button
+                onClick={(e) => toggleWishlist(product, e)}
+                className="absolute top-3 right-3 text-pink-500 hover:text-pink-700"
+              >
+                {isInWishlist(product.id)
+                  ? <FaHeart size={18} />
+                  : <FaHeart size={18} className="opacity-40" />}
+              </button>
+
               <div onClick={() => openModal(product)} className="cursor-pointer">
                 <img
                   src={product.url}
@@ -94,15 +122,22 @@ function Categorylist() {
       {selectedProduct && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
           <div className="bg-white rounded-xl relative max-w-md w-full flex flex-col">
-            {/* Close icon */}
             <MdClose
               className="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-800"
               onClick={closeModal}
               size={24}
             />
+            {/* Heart icon in modal */}
+            <button
+              onClick={(e) => toggleWishlist(selectedProduct, e)}
+              className="absolute top-4 left-4 text-pink-500 hover:text-pink-700"
+            >
+              {isInWishlist(selectedProduct.id)
+                ? <FaHeart size={22} />
+                : <FaHeart size={22} className="opacity-40" />}
+            </button>
 
-            {/* Content */}
-            <div className="p-6 flex-1  max-h-[80vh]">
+            <div className="p-6 flex-1 max-h-[80vh]">
               <div className="mb-4">
                 <img
                   src={selectedProduct.url}
@@ -119,7 +154,6 @@ function Categorylist() {
               </p>
             </div>
 
-            {/* Fixed Add to Cart button */}
             <div className="border-t border-gray-200 px-6 py-4">
               <button
                 onClick={() => handleAddToCart(selectedProduct)}

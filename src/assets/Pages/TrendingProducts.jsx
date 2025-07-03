@@ -2,7 +2,9 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Fetch } from '../Context/Fetchcontext';
 import { Cartcontext } from '../Context/Cartcontext';
+import { Wishlistcontext } from '../Context/Wishlistcontext';
 import { MdClose, MdShoppingCart } from 'react-icons/md';
+import { FaHeart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -10,6 +12,7 @@ const TrendingProducts = () => {
   const navigate = useNavigate();
   const { productList } = useContext(Fetch);
   const { addToCart } = useContext(Cartcontext);
+  const { wishlist, addToWishlist, removeFromWishlist } = useContext(Wishlistcontext);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const trendingProducts = productList.filter(p => p.trending).slice(0, 6) || productList.slice(0, 6);
@@ -25,6 +28,23 @@ const TrendingProducts = () => {
       navigate("/userlogin");
     }
   };
+
+  const toggleWishlist = (product, e) => {
+    e.stopPropagation();
+    if (localStorage.getItem("id")) {
+      if (wishlist.find(item => item.id === product.id)) {
+        removeFromWishlist(product.id);
+        toast.info(`${product.name} removed from wishlist`);
+      } else {
+        addToWishlist(product);
+        toast.success(`${product.name} added to wishlist`);
+      }
+    } else {
+      navigate("/userlogin");
+    }
+  };
+
+  const isInWishlist = (productId) => wishlist.some(item => item.id === productId);
 
   const openModal = (product, e) => {
     e?.stopPropagation();
@@ -48,10 +68,18 @@ const TrendingProducts = () => {
             {trendingProducts.map(product => (
               <div
                 key={product.id}
-                onClick={(e) => openModal(product, e)}
-                className="bg-white rounded-xl shadow hover:shadow-lg transition cursor-pointer group flex flex-col"
+                className="bg-white rounded-xl shadow hover:shadow-lg transition group flex flex-col relative cursor-pointer"
               >
-                <div className="relative flex-1 flex items-center justify-center p-4">
+                {/* Heart icon */}
+                <button
+                  onClick={(e) => toggleWishlist(product, e)}
+                  className="absolute top-3 right-3 text-pink-500 hover:text-pink-700 z-10"
+                >
+                  {isInWishlist(product.id) ? <FaHeart size={18} /> : <FaHeart size={18} className="opacity-40" />}
+                </button>
+
+                {/* Image + rating */}
+                <div onClick={(e) => openModal(product, e)} className="relative flex-1 flex items-center justify-center p-4">
                   <img
                     src={product.url || fallbackImage}
                     alt={product.name}
@@ -59,17 +87,21 @@ const TrendingProducts = () => {
                     onError={(e) => { e.target.src = fallbackImage; }}
                   />
                   {product.rating && (
-      <div className="absolute top-3 left-3 bg-pink-500 text-white px-2 py-1 rounded-md text-xs font-semibold flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9.049 2.927a1 1 0 011.902 0l1.179 3.631a1 1 0 00.95.69h3.813a1 1 0 01.592 1.806l-3.084 2.24a1 1 0 00-.364 1.118l1.179 3.631a1 1 0 01-1.538 1.118L10 13.347l-3.084 2.24a1 1 0 01-1.538-1.118l1.179-3.631a1 1 0 00-.364-1.118L3.109 9.054a1 1 0 01.592-1.806h3.813a1 1 0 00.95-.69l1.179-3.631z" />
-        </svg>
-        {product.rating}
-      </div>
-    )}
+                    <div className="absolute top-3 left-3 bg-pink-500 text-white px-2 py-1 rounded-md text-xs font-semibold flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927a1 1 0 011.902 0l1.179 3.631a1 1 0 00.95.69h3.813a1 1 0 01.592 1.806l-3.084 2.24a1 1 0 00-.364 1.118l1.179 3.631a1 1 0 01-1.538 1.118L10 13.347l-3.084 2.24a1 1 0 01-1.538-1.118l1.179-3.631a1 1 0 00-.364-1.118L3.109 9.054a1 1 0 01.592-1.806h3.813a1 1 0 00.95-.69l1.179-3.631z" />
+                      </svg>
+                      {product.rating}
+                    </div>
+                  )}
                 </div>
-                 
+
+                {/* Title + price + Add to Cart */}
                 <div className="p-4 flex flex-col">
-                  <h3 className="text-base font-semibold text-gray-800 mb-2 line-clamp-2 hover:text-pink-600 transition-colors">
+                  <h3
+                    onClick={(e) => openModal(product, e)}
+                    className="text-base font-semibold text-gray-800 mb-2 line-clamp-2 hover:text-pink-600 transition-colors"
+                  >
                     {product.name}
                   </h3>
                   <div className="flex justify-between items-center mt-auto">
@@ -108,6 +140,14 @@ const TrendingProducts = () => {
                 onClick={closeModal}
                 size={24}
               />
+              {/* Heart in modal */}
+              <button
+                onClick={(e) => toggleWishlist(selectedProduct, e)}
+                className="absolute top-4 left-4 text-pink-500 hover:text-pink-700"
+              >
+                {isInWishlist(selectedProduct.id) ? <FaHeart size={22} /> : <FaHeart size={22} className="opacity-40" />}
+              </button>
+
               {/* Image */}
               <div className="md:w-1/2 flex items-center justify-center bg-gray-50 p-4">
                 <img
@@ -117,6 +157,7 @@ const TrendingProducts = () => {
                   onError={(e) => { e.target.src = fallbackImage; }}
                 />
               </div>
+
               {/* Details */}
               <div className="md:w-1/2 p-6 flex flex-col">
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">{selectedProduct.name}</h2>

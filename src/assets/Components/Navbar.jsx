@@ -1,11 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { FaSearch, FaUser, FaShoppingBasket, FaBars, FaTimes } from 'react-icons/fa';
+import { FaSearch, FaUser, FaShoppingBasket, FaBars, FaTimes, FaHeart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { Cartcontext } from '../Context/Cartcontext';
+import { Wishlistcontext } from '../Context/Wishlistcontext';
 
 function Navbar() {
   const [search, setSearch] = useState('');
   const { cartCount } = useContext(Cartcontext);
+  const { wishlist } = useContext(Wishlistcontext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [role, setRole] = useState(null);
@@ -65,7 +67,7 @@ function Navbar() {
         </h3>
       </div>
 
-      {/* Desktop Search - Smaller version */}
+      {/* Desktop Search */}
       <div className="hidden lg:flex items-center flex-1 max-w-xs mx-4">
         <div className="relative w-full">
           <input
@@ -86,18 +88,33 @@ function Navbar() {
 
       {/* Desktop Navigation */}
       <div className="hidden lg:flex items-center space-x-4">
+        {/* Cart icon */}
         <div 
-          className="relative cursor-pointer text-white hover:text-pink-100 transition"
+          className="relative cursor-pointer text-pink-500 hover:text-pink-100 transition"
           onClick={() => navigate('/cart')}
         >
           <FaShoppingBasket size={18} />
           {cartCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-white text-pink-600 text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+            <span className="absolute -top-3.5 -right-2 bg-white text-pink-600 text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
               {cartCount}
             </span>
           )}
         </div>
 
+        {/* Wishlist icon */}
+        <div
+          className="relative cursor-pointer text-pink-500 hover:text-pink-100 transition"
+          onClick={() => navigate('/wishlist')}
+        >
+          <FaHeart size={18} />
+          {wishlist.length > 0 && (
+            <span className="absolute -top-3.5 -right-2 bg-white text-pink-600 text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
+              {wishlist.length}
+            </span>
+          )}
+        </div>
+
+        {/* User dropdown */}
         <div className="relative">
           <div
             className="flex items-center cursor-pointer hover:text-pink-100 transition"
@@ -182,6 +199,14 @@ function Navbar() {
             >
               <FaShoppingBasket className="mr-2 text-pink-600" />
               Cart {cartCount > 0 && `(${cartCount})`}
+            </li>
+
+            <li
+              className="flex items-center text-gray-700 py-2"
+              onClick={() => navigate('/wishlist')}
+            >
+              <FaHeart className="mr-2 text-pink-600" />
+              Wishlist {wishlist.length > 0 && `(${wishlist.length})`}
             </li>
 
             {role === 'user' && (

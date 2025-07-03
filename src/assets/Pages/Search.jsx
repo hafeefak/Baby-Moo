@@ -2,96 +2,173 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../Components/Navbar';
 import { Cartcontext } from '../Context/Cartcontext';
+import { Wishlistcontext } from '../Context/Wishlistcontext';
 import { Fetch } from '../Context/Fetchcontext';
+import { MdShoppingCart, MdClose } from 'react-icons/md';
+import { FaRupeeSign, FaHeart } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 function SearchProduct() {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [filtered, setFiltered] = useState([]);
-    const { addToCart, selectedProduct, openModal, closeModal } = useContext(Cartcontext);
-    const { productList } = useContext(Fetch);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const result = location.state?.result || '';
+  const { productList } = useContext(Fetch);
+  const { addToCart } = useContext(Cartcontext);
+  const { wishlist, addToWishlist, removeFromWishlist } = useContext(Wishlistcontext);
+  const [filtered, setFiltered] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-    const result = location.state?.result || '';
+  const id = localStorage.getItem('id');
 
-    console.log(result)
-    console.log("products",productList)
+  useEffect(() => {
+    const filteredProducts = productList.filter((product) =>
+      product.name.toLowerCase().includes(result.toLowerCase()) ||
+      product.category.toLowerCase().includes(result.toLowerCase())
+    );
+    setFiltered(filteredProducts);
+  }, [result, productList]);
 
-    useEffect(() => {
-        const filteredProducts = productList.filter((product) =>
-            product.name.toLowerCase().includes(result.toLowerCase()) ||
-            product.category.toLowerCase().includes(result.toLowerCase())
-        );
-        setFiltered(filteredProducts);
-    }, [result]);
+  const isInWishlist = (productId) => wishlist.some(item => item.id === productId);
 
-    return (
-        <div>
-            <Navbar />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-20">
-                {filtered.length > 0 ? (
-                    filtered.map((product) => (
-                        <div
-                            key={product.id}
-                            className="border rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
-                        >
-                            <img
-                                src={product.url}
-                                alt={product.name}
-                                onClick={() => openModal(product)}
-                                className="w-60 h-60 object-cover mx-auto mt-4 cursor-pointer"
-                            />
-                            <div className="text-center p-4">
-                                <h1 className="mt-2 text-lg font-semibold">{product.name}</h1>
-                                <p className="mt-1 text-gray-700">₹ {product.price}</p>
-                            </div>
-                            <div className="flex justify-center mb-4">
-                                <button
-                                    className="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600"
-                                    onClick={() => addToCart(product)}
-                                >
-                                    Add to Cart
-                                </button>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-center text-lg text-gray-500 p-20">No products found.</p>
-                )}
+  const toggleWishlist = (product, e) => {
+    e.stopPropagation();
+    if (id) {
+      if (isInWishlist(product.id)) {
+        removeFromWishlist(product.id);
+        toast.info(`${product.name} removed from wishlist`);
+      } else {
+        addToWishlist(product);
+        toast.success(`${product.name} added to wishlist`);
+      }
+    } else {
+      navigate('/userlogin');
+    }
+  };
+
+  const handleAddToCart = (product, e) => {
+    e?.stopPropagation();
+    if (id) {
+      addToCart(product);
+      toast.success(`${product.name} added to cart`);
+      if (selectedProduct) setSelectedProduct(null);
+    } else {
+      navigate('/userlogin');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="container mx-auto px-4 py-8 mt-20">
+        {filtered.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filtered.map((product) => (
+              <div
+                key={product.id}
+                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 relative"
+                onClick={() => setSelectedProduct(product)}
+              >
+                {/* Heart icon */}
+                <button
+                  onClick={(e) => toggleWishlist(product, e)}
+                  className="absolute top-3 right-3 text-pink-500 hover:text-pink-700"
+                >
+                  {isInWishlist(product.id)
+                    ? <FaHeart size={18} />
+                    : <FaHeart size={18} className="opacity-40" />}
+                </button>
+
+                <img
+                  src={product.url}
+                  alt={product.name}
+                  className="w-full h-48 object-cover"
+                />
+
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate">{product.name}</h3>
+                  <p className="text-lg font-bold text-pink-600">
+                    <FaRupeeSign className="inline mr-1" />
+                    {Number(product.price).toFixed(2)}
+                  </p>
+                </div>
+
+                <div className="px-4 pb-4">
+                  <button
+                    onClick={(e) => handleAddToCart(product, e)}
+                    disabled={product.quantity === 0}
+                    className={`w-full flex items-center justify-center py-2 px-4 rounded-lg font-medium transition-colors ${
+                      product.quantity === 0
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-pink-500 text-white hover:bg-pink-600'
+                    }`}
+                  >
+                    <MdShoppingCart className="mr-2" />
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-lg text-gray-500 mt-20">No products found.</p>
+        )}
+      </div>
+
+      {/* Modal */}
+      {selectedProduct && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
+          <div className="bg-white rounded-xl relative max-w-md w-full flex flex-col">
+            <MdClose
+              className="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-800"
+              onClick={() => setSelectedProduct(null)}
+              size={24}
+            />
+            {/* Heart icon in modal */}
+            <button
+              onClick={(e) => toggleWishlist(selectedProduct, e)}
+              className="absolute top-4 left-4 text-pink-500 hover:text-pink-700"
+            >
+              {isInWishlist(selectedProduct.id)
+                ? <FaHeart size={22} />
+                : <FaHeart size={22} className="opacity-40" />}
+            </button>
+
+            <div className="p-6 flex-1 max-h-[80vh]">
+              <div className="mb-4">
+                <img
+                  src={selectedProduct.url}
+                  alt={selectedProduct.name}
+                  className="w-full h-60 object-cover rounded-lg"
+                />
+              </div>
+              <h2 className="text-2xl font-bold mb-2 text-gray-800">{selectedProduct.name}</h2>
+              <p className="text-gray-600 mb-4">{selectedProduct.description || "No description available."}</p>
+              <p className="text-l font-bold text-gray-500">Price</p>
+              <p className="text-xl font-bold text-pink-600 mb-6">
+                <FaRupeeSign className="inline mr-1" />
+                {Number(selectedProduct.price).toFixed(2)}
+              </p>
             </div>
 
-            {selectedProduct && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 max-w-md w-full relative text-center">
-                        <button
-                            onClick={closeModal}
-                            className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-                        >
-                            X
-                        </button>
-                        <img
-                            src={selectedProduct.url}
-                            alt={selectedProduct.name}
-                            className="w-60 h-60 object-cover rounded-lg mb-4 mx-auto"
-                        />
-                        <h1 className="text-2xl font-bold mb-4">{selectedProduct.name}</h1>
-                        <p className="text-gray-700 mb-2">₹ {selectedProduct.price}</p>
-                        <p className="text-gray-600 mb-4">
-                            {selectedProduct.description || "No description available."}
-                        </p>
-                        <button
-                            className="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600"
-                            onClick={() => {
-                                addToCart(selectedProduct);
-                                closeModal();
-                            }}
-                        >
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-            )}
+            <div className="border-t border-gray-200 px-6 py-4">
+              <button
+                onClick={(e) => handleAddToCart(selectedProduct, e)}
+                disabled={selectedProduct.quantity === 0}
+                className={`w-full flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-colors ${
+                  selectedProduct.quantity === 0
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-pink-500 text-white hover:bg-pink-600'
+                }`}
+              >
+                <MdShoppingCart className="mr-2" size={20} />
+                Add to Cart
+              </button>
+            </div>
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 }
 
 export default SearchProduct;

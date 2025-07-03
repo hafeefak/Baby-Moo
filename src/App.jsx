@@ -20,6 +20,8 @@ import Adminhome from './assets/Admin/Adminhome';
 import Adminprotect from './assets/Admin/Adminprotected';
 import Adminuser from './assets/Admin/Adminuser';
 import Adminproducts from './assets/Admin/Adminproducts';
+import Wishlistprovider from './assets/Context/Wishlistcontext';
+import Wishlist from './assets/Pages/Wishlist';
 
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
    
     <FetchContext>
       <Cartprovider>
+        <Wishlistprovider>
      <Adminprovider>
   
     <Routes>
@@ -36,6 +39,7 @@ function App() {
       <Route path="/userlogin" element={<UserLogin/>} />
       <Route path="/products" element={<Products/>} />
       <Route path="/cart" element={<Cart/>} />
+      <Route path="/wishlist" element={<Wishlist/>}/>
       
       <Route path="/orders" element={<Orders/>} />
       <Route path="/orderlist" element={<Orderlist/>} />
@@ -67,8 +71,9 @@ function App() {
     </Routes>
   
     </Adminprovider>
-    
+     </Wishlistprovider>
     </Cartprovider>
+   
     </FetchContext>
   <ToastContainer
   position="top-right"
