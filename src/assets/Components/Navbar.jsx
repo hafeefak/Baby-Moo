@@ -3,6 +3,7 @@ import { FaSearch, FaUser, FaShoppingBasket, FaBars, FaTimes, FaHeart } from 're
 import { useNavigate } from 'react-router-dom';
 import { Cartcontext } from '../Context/Cartcontext';
 import { Wishlistcontext } from '../Context/Wishlistcontext';
+import api from "../../api/axiosConfig";  // ✅ import your axios config
 
 function Navbar() {
   const [search, setSearch] = useState('');
@@ -10,22 +11,42 @@ function Navbar() {
   const { wishlist } = useContext(Wishlistcontext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const [username, setUsername] = useState(null);
   const [role, setRole] = useState(null);
+
   const navigate = useNavigate();
 
+  // ✅ Fetch user info on mount
   useEffect(() => {
-    const storedRole = localStorage.getItem('role');
-    setRole(storedRole); 
+    const fetchUser = async () => {
+      try {
+        const id = localStorage.getItem('id');
+        if (!id) return;
+        const res = await api.get(`/users/${id}`);
+        setUsername(res.data.name);
+        setRole(res.data.role);
+      } catch (error) {
+        console.error('Failed to fetch user info:', error);
+        setUsername(null);
+        setRole(null);
+      }
+    };
+    fetchUser();
   }, []);
-
-  const username = localStorage.getItem('name');
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
   };
 
-  const handleSearchSubmit = () => {
-    navigate('/search', { state: { result: search } });
+  // ✅ Use api instead of fetch
+  const handleSearchSubmit = async () => {
+    try {
+      const res = await api.get(`/products/search?query=${search}`);
+      navigate('/search', { state: { result: search, products: res.data } });
+    } catch (error) {
+      console.error('Search failed:', error);
+    }
   };
 
   const handleOrders = () => {
@@ -41,12 +62,15 @@ function Navbar() {
   };
 
   const handleLogout = () => {
-    localStorage.clear(); 
+    localStorage.clear();
+    setUsername(null);
+    setRole(null);
     navigate('/userlogin');
   };
 
   return (
-    <nav className="bg-[#F5BAC7] shadow-lg flex items-center justify-between px-4 md:px-6 py-2 fixed w-full z-50 top-0 left-0 ">
+    <nav className="bg-[#F5BAC7] shadow-lg flex items-center justify-between px-4 md:px-6 py-2 fixed w-full z-50 top-0 left-0">
+      
       {/* Mobile menu button */}
       <div className="lg:hidden">
         <button 
@@ -88,7 +112,8 @@ function Navbar() {
 
       {/* Desktop Navigation */}
       <div className="hidden lg:flex items-center space-x-4">
-        {/* Cart icon */}
+        
+        {/* Cart */}
         <div 
           className="relative cursor-pointer text-pink-500 hover:text-pink-100 transition"
           onClick={() => navigate('/cart')}
@@ -101,7 +126,7 @@ function Navbar() {
           )}
         </div>
 
-        {/* Wishlist icon */}
+        {/* Wishlist */}
         <div
           className="relative cursor-pointer text-pink-500 hover:text-pink-100 transition"
           onClick={() => navigate('/wishlist')}
@@ -172,7 +197,6 @@ function Navbar() {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="lg:hidden absolute top-full left-0 right-0 bg-white shadow-lg py-4 px-6">
-          {/* Mobile Search */}
           <div className="mb-4">
             <div className="relative">
               <input
@@ -191,7 +215,6 @@ function Navbar() {
             </div>
           </div>
 
-          {/* Mobile Navigation */}
           <ul className="space-y-3">
             <li 
               className="flex items-center text-gray-700 py-2"

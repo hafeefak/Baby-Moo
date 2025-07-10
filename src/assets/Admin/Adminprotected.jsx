@@ -1,9 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { isAuthenticated, isAdmin } from "../../Utils/Auth"; // adjust path if needed
 
-const Adminprotect = ({children}) => {
-  const adminLogged = localStorage.getItem("adminLogged") === "true";
+const Adminprotect = ({ children }) => {
+  // ✅ Check: must be logged in AND must be admin
+  const allowed = isAuthenticated() && isAdmin();
 
-  return adminLogged ? children : <Navigate to="/adminlogin" />;
+  return allowed ? children : <Navigate to="/adminlogin" replace />;
 };
 
 export default Adminprotect;

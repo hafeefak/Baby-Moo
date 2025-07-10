@@ -13,9 +13,9 @@ const Wishlist = () => {
   const navigate = useNavigate();
 
   const handleAddToCart = (product) => {
-    if (localStorage.getItem("id")) {
-      addToCart(product);
-      toast.success(`${product.name} added to cart`);
+    if (localStorage.getItem("token")) {
+      addToCart(product.productId, 1);  // use backend productId
+      toast.success(`${product.productName} added to cart`);
     } else {
       navigate("/userlogin");
       toast.info("Please login to add items to cart");
@@ -25,7 +25,7 @@ const Wishlist = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       <main className="container mx-auto px-4 py-8 mt-20">
         <header className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">My Wishlist</h1>
@@ -62,39 +62,38 @@ const Wishlist = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {wishlist.map((product) => (
                 <article
-                  key={product.id}
+                  key={product.productId}
                   className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col group"
                 >
                   <img
-                    src={product.url}
-                    alt={product.name}
+                    src={product.imageUrl}
+                    alt={product.productName}
                     className="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-300"
                     loading="lazy"
                   />
                   <div className="p-5 flex flex-col flex-1">
                     <h3 className="text-lg font-semibold text-gray-800 line-clamp-2 mb-2">
-                      {product.name}
+                      {product.productName}
                     </h3>
                     <p className="text-pink-600 font-bold text-lg mb-4">
-                      ₹{product.price.toLocaleString()}
+                      ₹{Number(product.price).toLocaleString()}
                     </p>
                     <div className="mt-auto grid grid-cols-2 gap-2">
-  <button
-    onClick={() => handleAddToCart(product)}
-    className="flex items-center justify-center py-3 px-4 rounded-lg text-sm font-medium bg-pink-500 text-white hover:bg-pink-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 hover:shadow-md"
-  >
-    <MdShoppingCart className="mr-2" size={16} />
-    Cart
-  </button>
-  <button
-    onClick={() => removeFromWishlist(product.id)}
-    className="flex items-center justify-center py-3 px-4 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-red-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
-  >
-    <MdDeleteOutline size={16} />
-    Remove
-  </button>
-</div>
-
+                      <button
+                        onClick={() => handleAddToCart(product)}
+                        className="flex items-center justify-center py-3 px-4 rounded-lg text-sm font-medium bg-pink-500 text-white hover:bg-pink-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 hover:shadow-md"
+                      >
+                        <MdShoppingCart className="mr-2" size={16} />
+                        Cart
+                      </button>
+                      <button
+                        onClick={() => removeFromWishlist(product.productId)}
+                        className="flex items-center justify-center py-3 px-4 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-red-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+                      >
+                        <MdDeleteOutline size={16} />
+                        Remove
+                      </button>
+                    </div>
                   </div>
                 </article>
               ))}

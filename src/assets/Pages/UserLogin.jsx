@@ -1,99 +1,76 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-
 import '../styles/login.css';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { loginvalidationschema } from '../Schema/Validationschema';
-
+import api from "../../api/axiosConfig";
 
 function UserLogin() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-
-  const initialValues = {
-    email: '',
-    password: '',
-  };
-
+  const initialValues = { email: '', password: '' };
 
   const onSubmit = async (values) => {
+    setLoading(true);
     try {
+      const payload = {
+        Email: values.email,
+        Password: values.password,
+      };
+      const { data } = await api.post('/Auth/login', payload);
 
-      const response = await axios.get('http://localhost:5001/users');
-      const user = response.data.find(
-        (u) => u.email === values.email && u.password === values.password
-      );
+      if (data && data.statusCode === 200) {
+        const userData = data.data;
+        const token = userData.token;
+        const role = userData.role || 'User';
 
-      if (user) {
-          if(!user.status){
-                    toast.error('You are blocked')
-                    return;
-                  }
-         localStorage.setItem('id', user.id)
-        localStorage.setItem('name', user.name)
-        localStorage.setItem("role","user")
-        toast.success(`Welcome, ${user.name}!`);
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('user_role', role);
+
+        toast.success(`Welcome, ${userData.name}!`);
         navigate('/');
+        
       } else {
-        toast.error('Become a part of our family');
+        toast.error(data.message || 'Login failed!');
       }
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('An error occurred. Please try again later.');
+      const message = error.response?.data?.message || error.message || 'An error occurred';
+      toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="login max-w-md mx-auto mt-10 p-8 bg-white rounded-lg shadow-lg scrollbar-y-hidden">
+    <div className="login max-w-md mx-auto mt-10 p-8 bg-white rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold mb-5 text-center">Log in</h1>
-
-      <Formik
-        initialValues={initialValues}
-        validationSchema={loginvalidationschema}
-        onSubmit={onSubmit}
-      >
+      <Formik initialValues={initialValues} validationSchema={loginvalidationschema} onSubmit={onSubmit}>
         <Form>
-
           <div className="loginform mb-4">
-            <Field type="email" id="email" name="email" placeholder="Email" />
+            <Field type="email" name="email" placeholder="Email" />
             <ErrorMessage name="email" component="div" className="error" />
           </div>
-
-
           <div className="loginform mb-4">
-            <Field
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Password"
-            />
+            <Field type="password" name="password" placeholder="Password" />
             <ErrorMessage name="password" component="div" className="error" />
           </div>
-
-
           <div className="loginbutn mb-4">
-            <button type="submit" className="submit-button ">
-              Login
+            <button type="submit" className="submit-button" disabled={loading}>
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </div>
-
           <div className="register-link mt-3">
             <p>
-              Don't have an account?
-              <br />
-              <Link to="/register" className="sign-up-link">
-                Register
-              </Link>
+              Don't have an account? <br />
+              <Link to="/register" className="sign-up-link">Register</Link>
             </p>
           </div>
         </Form>
       </Formik>
-
-
-
     </div>
   );
 }

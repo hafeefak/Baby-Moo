@@ -18,41 +18,43 @@ function SearchProduct() {
   const [filtered, setFiltered] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const id = localStorage.getItem('id');
+  const token = localStorage.getItem('auth_token');
 
   useEffect(() => {
     const filteredProducts = productList.filter((product) =>
-      product.name.toLowerCase().includes(result.toLowerCase()) ||
-      product.category.toLowerCase().includes(result.toLowerCase())
+      product.productName.toLowerCase().includes(result.toLowerCase()) ||
+      product.categoryName.toLowerCase().includes(result.toLowerCase())
     );
     setFiltered(filteredProducts);
   }, [result, productList]);
 
-  const isInWishlist = (productId) => wishlist.some(item => item.id === productId);
+  const isInWishlist = (productId) => wishlist.some(item => item.productId === productId);
 
   const toggleWishlist = (product, e) => {
     e.stopPropagation();
-    if (id) {
-      if (isInWishlist(product.id)) {
-        removeFromWishlist(product.id);
-        toast.info(`${product.name} removed from wishlist`);
+    if (token) {
+      if (isInWishlist(product.productId)) {
+        removeFromWishlist(product.productId);
+        toast.info(`${product.productName} removed from wishlist`);
       } else {
-        addToWishlist(product);
-        toast.success(`${product.name} added to wishlist`);
+        addToWishlist(product.productId);
+        toast.success(`${product.productName} added to wishlist`);
       }
     } else {
       navigate('/userlogin');
+      toast.info('Please login to manage wishlist');
     }
   };
 
   const handleAddToCart = (product, e) => {
     e?.stopPropagation();
-    if (id) {
-      addToCart(product);
-      toast.success(`${product.name} added to cart`);
+    if (token) {
+      addToCart(product.productId, 1); // pass productId + quantity
+      toast.success(`${product.productName} added to cart`);
       if (selectedProduct) setSelectedProduct(null);
     } else {
       navigate('/userlogin');
+      toast.info('Please login to add items to cart');
     }
   };
 
@@ -64,31 +66,33 @@ function SearchProduct() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filtered.map((product) => (
               <div
-                key={product.id}
+                key={product.productId}
                 className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 relative"
                 onClick={() => setSelectedProduct(product)}
               >
-                {/* Heart icon */}
+                {/* Wishlist icon */}
                 <button
                   onClick={(e) => toggleWishlist(product, e)}
                   className="absolute top-3 right-3 text-pink-500 hover:text-pink-700"
                 >
-                  {isInWishlist(product.id)
+                  {isInWishlist(product.productId)
                     ? <FaHeart size={18} />
                     : <FaHeart size={18} className="opacity-40" />}
                 </button>
 
                 <img
-                  src={product.url}
-                  alt={product.name}
+                  src={product.imageUrl}
+                  alt={product.productName}
                   className="w-full h-48 object-cover"
                 />
 
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate">{product.name}</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate">
+                    {product.productName}
+                  </h3>
                   <p className="text-lg font-bold text-pink-600">
                     <FaRupeeSign className="inline mr-1" />
-                    {Number(product.price).toFixed(2)}
+                    {Number(product.price ?? 0).toFixed(2)}
                   </p>
                 </div>
 
@@ -123,30 +127,30 @@ function SearchProduct() {
               onClick={() => setSelectedProduct(null)}
               size={24}
             />
-            {/* Heart icon in modal */}
+
             <button
               onClick={(e) => toggleWishlist(selectedProduct, e)}
               className="absolute top-4 left-4 text-pink-500 hover:text-pink-700"
             >
-              {isInWishlist(selectedProduct.id)
+              {isInWishlist(selectedProduct.productId)
                 ? <FaHeart size={22} />
                 : <FaHeart size={22} className="opacity-40" />}
             </button>
 
-            <div className="p-6 flex-1 max-h-[80vh]">
+            <div className="p-6 flex-1 max-h-[80vh] overflow-y-auto">
               <div className="mb-4">
                 <img
-                  src={selectedProduct.url}
-                  alt={selectedProduct.name}
+                  src={selectedProduct.imageUrl}
+                  alt={selectedProduct.productName}
                   className="w-full h-60 object-cover rounded-lg"
                 />
               </div>
-              <h2 className="text-2xl font-bold mb-2 text-gray-800">{selectedProduct.name}</h2>
+              <h2 className="text-2xl font-bold mb-2 text-gray-800">{selectedProduct.productName}</h2>
               <p className="text-gray-600 mb-4">{selectedProduct.description || "No description available."}</p>
               <p className="text-l font-bold text-gray-500">Price</p>
               <p className="text-xl font-bold text-pink-600 mb-6">
                 <FaRupeeSign className="inline mr-1" />
-                {Number(selectedProduct.price).toFixed(2)}
+                {Number(selectedProduct.price ?? 0).toFixed(2)}
               </p>
             </div>
 

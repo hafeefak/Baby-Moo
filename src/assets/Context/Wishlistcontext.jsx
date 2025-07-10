@@ -1,74 +1,63 @@
 import { createContext, useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../api/axiosConfig"; // ✅ your secure axios instance
 import { toast } from "react-toastify";
 
 export const Wishlistcontext = createContext();
 
 export default function Wishlistprovider({ children }) {
-    const [wishlist, setWishlist] = useState([]);
-    const id = localStorage.getItem("id");
+  const [wishlist, setWishlist] = useState([]);
+  const token = localStorage.getItem("token");
 
-    // Fetch wishlist when user logs in
-    useEffect(() => {
-        const fetchWishlist = async () => {
-            if (!id) return;
-            try {
-                const response = await axios.get(`http://localhost:5001/users/${id}`);
-                setWishlist(response.data.wishlist || []);
-            } catch (error) {
-                console.error("Error fetching wishlist:", error);
-            }
-        };
-        fetchWishlist();
-    }, [id]);
+  useEffect(() => {
+    if (token) fetchWishlist();
+  }, [token]);
 
-    // Add product to wishlist
-    const addToWishlist = async (product) => {
-        if (!product || !product.id) {
-            console.error("Invalid product:", product);
-            return;
-        }
-        const existing = wishlist.find(item => item.id === product.id);
-        if (existing) {
-            toast.info("Item already in wishlist");
-            return;
-        }
-        const updatedWishlist = [...wishlist, product];
-        setWishlist(updatedWishlist);
-        toast.success("Item added to wishlist");
+  // ✅ Fetch wishlist
+  const fetchWishlist = async () => {
+    try {
+      const res = await api.get("/wishlist");
+      setWishlist(res.data.data || []);
+    } catch (error) {
+      console.error("Error fetching wishlist:", error);
+    }
+  };
 
-        if (id) {
-            try {
-                await axios.patch(`http://localhost:5001/users/${id}`, { wishlist: updatedWishlist });
-            } catch (error) {
-                console.error("Failed to update wishlist in DB:", error);
-            }
-        }
-    };
+  // ✅ Add product to wishlist
+  const addToWishlist = async (productId) => {
+    try {
+      await api.post(`/wishlist/${productId}`);
+      toast.success("Product added to wishlist");
+      fetchWishlist();
+    } catch (error) {
+      console.error("Failed to add to wishlist:", error);
+      toast.error(error.response?.data?.message || "Failed to add to wishlist");
+    }
+  };
 
-    // Remove product from wishlist
-    const removeFromWishlist = async (productId) => {
-        const updatedWishlist = wishlist.filter(item => item.id !== productId);
-        setWishlist(updatedWishlist);
-        toast.success("Item removed from wishlist");
+  // ✅ Remove product from wishlist
+  const removeFromWishlist = async (productId) => {
+    try {
+      await api.delete(`/wishlist/${productId}`);
+      toast.success("Product removed from wishlist");
+      fetchWishlist();
+    } catch (error) {
+      console.error("Failed to remove from wishlist:", error);
+      toast.error(error.response?.data?.message || "Failed to remove from wishlist");
+    }
+  };
 
-        if (id) {
-            try {
-                await axios.patch(`http://localhost:5001/users/${id}`, { wishlist: updatedWishlist });
-            } catch (error) {
-                console.error("Failed to update wishlist in DB:", error);
-            }
-        }
-    };
+  // ✅ Check if product is in wishlist
+  const isInWishlist = (productId) =>
+    wishlist.some(item => item.productId === productId);
 
-    return (
-        <Wishlistcontext.Provider value={{
-            wishlist,
-            setWishlist,
-            addToWishlist,
-            removeFromWishlist,
-        }}>
-            {children}
-        </Wishlistcontext.Provider>
-    );
+  return (
+    <Wishlistcontext.Provider value={{
+      wishlist,
+      addToWishlist,
+      removeFromWishlist,
+      isInWishlist
+    }}>
+      {children}
+    </Wishlistcontext.Provider>
+  );
 }

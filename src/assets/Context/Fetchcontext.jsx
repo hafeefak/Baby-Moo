@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axiosConfig';  // ✅ use your api instance
 
 export const Fetch = createContext();
 
@@ -9,11 +9,16 @@ export default function FetchContext({ children }) {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get("http://localhost:5001/products");
+                const response = await api.get("/Product");
                 console.log("Fetched data:", response.data);
-                setProductList(response.data);
+                
+                if (response.data && response.data.statusCode === 200) {
+                    setProductList(response.data.data); // ✅ use .data from ApiResponse
+                } else {
+                    console.error("Failed to fetch products:", response.data.message);
+                }
             } catch (error) {
-                console.error("Error fetching the products", error);
+                console.error("Error fetching the products:", error);
             }
         };
 
@@ -26,3 +31,4 @@ export default function FetchContext({ children }) {
         </Fetch.Provider>
     );
 }
+    

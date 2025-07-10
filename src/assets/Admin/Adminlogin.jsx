@@ -1,16 +1,17 @@
-import React ,{useContext}from 'react';
+import React, { useContext } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { adminvalidationschema } from '../Schema/Validationschema';
 import '../styles/login.css';
 import { Admincontext } from '../Context/Admincontxt';
+import api from '../../api/axiosConfig';  // adjust path if needed
+import { storeAuthData, isAdmin } from '../../Utils/Auth'; // adjust path if needed
 
 function AdminLogin() {
   const navigate = useNavigate();
-    const{setLogged}=useContext(Admincontext)
+  const { setLogged } = useContext(Admincontext);
 
- 
   const initialValues = {
     email: '',
     password: '',
@@ -18,20 +19,24 @@ function AdminLogin() {
 
   const onSubmit = async (values) => {
     try {
-      
-      if (values.email === 'hafeefak@gmail.com' && values.password === 'Hafeefa123') {
-    
-        localStorage.setItem("adminLogged", "true");
+      const response = await api.post('/auth/login', values);
 
-        toast.success(`Welcome, Admin!`);
+      const data = response.data?.data;
+      if (data && data.token && data.role === 'Admin') {
+        // Save to localStorage using your utils
+        storeAuthData(data.token, data.user, data.role);
+
+        // Optional: update context if needed
+        if (setLogged) setLogged(true);
+
+        toast.success('Welcome, Admin!');
         navigate('/adminhome');
       } else {
-        
-        toast.error('Invalid credentials');
+        toast.error(response.data?.message || 'Unauthorized or not admin');
       }
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('An error occurred. Try again.');
+      toast.error(error.response?.data?.message || 'An error occurred. Try again.');
     }
   };
 
@@ -44,27 +49,18 @@ function AdminLogin() {
         onSubmit={onSubmit}
       >
         <Form>
-  
           <div className="loginform mb-4">
             <Field type="email" id="email" name="email" placeholder="Email" />
             <ErrorMessage name="email" component="div" className="error" />
           </div>
 
           <div className="loginform mb-4">
-            <Field
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Password"
-            />
+            <Field type="password" id="password" name="password" placeholder="Password" />
             <ErrorMessage name="password" component="div" className="error" />
           </div>
 
-       
           <div className="loginbutn mb-4">
-            <button type="submit" className="submit-button">
-              Login
-            </button>
+            <button type="submit" className="submit-button">Login</button>
           </div>
         </Form>
       </Formik>
