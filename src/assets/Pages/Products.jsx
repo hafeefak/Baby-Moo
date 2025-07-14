@@ -7,22 +7,23 @@ import Navbar from '../Components/Navbar';
 import { toast } from 'react-toastify';
 import { Cartcontext } from '../Context/Cartcontext';
 import { Wishlistcontext } from '../Context/Wishlistcontext';
+import { isAuthenticated } from '../../Utils/Auth' // ✅ use helper
 
 const Products = () => {
-  const { productList } = useContext(Fetch);
+  const { productList = [] } = useContext(Fetch);
   const { addToCart } = useContext(Cartcontext);
   const { wishlist, addToWishlist, removeFromWishlist } = useContext(Wishlistcontext);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("auth_token");
-
-  const isInWishlist = (productId) => wishlist.some(item => item.productId === productId);
+  const isInWishlist = (productId) =>
+    wishlist?.some(item => item.productId === productId);
 
   const toggleWishlist = (product, e) => {
     e.stopPropagation();
-    if (!token) {
+    if (!isAuthenticated()) {
       navigate("/userlogin");
+      toast.info("Please login to manage wishlist");
       return;
     }
     if (isInWishlist(product.productId)) {
@@ -36,13 +37,14 @@ const Products = () => {
 
   const handleAddToCart = (product, e) => {
     e?.stopPropagation();
-    if (!token) {
+    if (!isAuthenticated()) {
       navigate("/userlogin");
+      toast.info("Please login to add to cart");
       return;
     }
-    addToCart(product.productId, 1);
+    addToCart(product, 1); // pass product & quantity
     toast.success(`${product.productName} added to cart`);
-    setSelectedProduct(null);
+    setSelectedProduct(null); // close modal
   };
 
   return (
@@ -56,7 +58,6 @@ const Products = () => {
               className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 relative"
               onClick={() => setSelectedProduct(product)}
             >
-              {/* Wishlist icon */}
               <button
                 onClick={(e) => toggleWishlist(product, e)}
                 className="absolute top-2 right-2 text-pink-500 hover:text-pink-700"
@@ -121,16 +122,17 @@ const Products = () => {
             </button>
 
             <div className="p-6 max-h-[80vh] flex-1 overflow-y-auto">
-              <div className="mb-4">
-                <img
-                  src={selectedProduct.imageUrl}
-                  alt={selectedProduct.productName}
-                  className="w-full h-60 object-cover rounded-lg"
-                />
-              </div>
-              <h2 className="text-2xl font-bold mb-2 text-gray-800">{selectedProduct.productName}</h2>
-              <p className="text-gray-600 mb-4">{selectedProduct.description || "No description available."}</p>
-
+              <img
+                src={selectedProduct.imageUrl}
+                alt={selectedProduct.productName}
+                className="w-full h-60 object-cover rounded-lg mb-4"
+              />
+              <h2 className="text-2xl font-bold mb-2 text-gray-800">
+                {selectedProduct.productName}
+              </h2>
+              <p className="text-gray-600 mb-4">
+                {selectedProduct.description || "No description available."}
+              </p>
               <p className="text-sm font-bold text-gray-500">Price</p>
               <p className="text-xl font-bold text-pink-600 mb-6">
                 <FaRupeeSign className="inline mr-1" />

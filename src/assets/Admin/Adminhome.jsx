@@ -1,8 +1,8 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Adminnavbar from './Adminnavbar';
 import { FaUsers, FaShoppingCart, FaChartLine, FaBoxOpen } from "react-icons/fa";
-import api from "../../api/axiosConfig"; // ✅ use secure axios instance
+import api from "../../api/axiosConfig";
 
 function Adminhome() {
   const navigate = useNavigate();
@@ -12,56 +12,54 @@ function Adminhome() {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [outOfStockCount, setOutOfStockCount] = useState(0);
 
-  useEffect(() => {
-    fetchBlockedUsers();
-    fetchTotalProductsSold();
-    fetchTotalRevenue();
-    fetchOutOfStock();
-  }, []);
-
-  // ✅ Fetch blocked users count
-  const fetchBlockedUsers = async () => {
+  // ✅ Memoize fetch functions so they're stable
+  const fetchBlockedUsers = useCallback(async () => {
     try {
-      const res = await api.get("/users"); // adjust path if needed
+      const res = await api.get("User/users");
       const users = res.data.data || [];
-      const blocked = users.filter(u => u.status === false).length;
+     const blocked = users.filter(u => u.blocked === true).length;
       setBlockedUsersCount(blocked);
     } catch (error) {
       console.error("Failed to fetch users:", error);
     }
-  };
+  }, []);
 
-  // ✅ Fetch total products sold
-  const fetchTotalProductsSold = async () => {
+  const fetchTotalProductsSold = useCallback(async () => {
     try {
       const res = await api.get("/orders/total-products");
       setTotalProductsSold(res.data.data || 0);
     } catch (error) {
       console.error("Failed to fetch total products sold:", error);
     }
-  };
+  }, []);
 
-  // ✅ Fetch total revenue
-  const fetchTotalRevenue = async () => {
+  const fetchTotalRevenue = useCallback(async () => {
     try {
       const res = await api.get("/orders/total-revenue");
       setTotalRevenue(res.data.data || 0);
     } catch (error) {
       console.error("Failed to fetch total revenue:", error);
     }
-  };
+  }, []);
 
-  // ✅ Fetch out of stock products count
-  const fetchOutOfStock = async () => {
+  const fetchOutOfStock = useCallback(async () => {
     try {
-      const res = await api.get("/products"); 
+      const res = await api.get("/Product");
       const products = res.data.data || [];
-      const outOfStock = products.filter(p => p.quantity === 0).length;
+      const outOfStock = products.filter(p => Number(p.quantity) === 0).length;
       setOutOfStockCount(outOfStock);
     } catch (error) {
       console.error("Failed to fetch out-of-stock products:", error);
     }
-  };
+  }, []);
+
+  // ✅ useEffect with these stable functions in deps, still runs once
+  useEffect(() => {
+    fetchBlockedUsers();
+    fetchTotalProductsSold();
+    fetchTotalRevenue();
+    fetchOutOfStock();
+  }, [fetchBlockedUsers, fetchTotalProductsSold, fetchTotalRevenue, fetchOutOfStock]);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -104,16 +102,29 @@ function Adminhome() {
 }
 
 // ✅ Small reusable card component
-const DashboardCard = ({ icon, bg, title, value }) => (
-  <div className={`bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 flex items-start border-l-4 border-${bg}-500`}>
-    <div className={`bg-${bg}-100 p-3 rounded-lg mr-4`}>
-      {icon}
+const DashboardCard = ({ icon, bg, title, value }) => {
+  const borderClass = bg === 'blue' ? 'border-blue-500'
+    : bg === 'green' ? 'border-green-500'
+    : bg === 'purple' ? 'border-purple-500'
+    : 'border-red-500';
+  const bgClass = bg === 'blue' ? 'bg-blue-100'
+    : bg === 'green' ? 'bg-green-100'
+    : bg === 'purple' ? 'bg-purple-100'
+    : 'bg-red-100';
+
+  return (
+    <div className={`bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 flex items-start ${borderClass}`}>
+      <div className={`${bgClass} p-3 rounded-lg mr-4`}>
+        {icon}
+      </div>
+      <div>
+        <p className="text-gray-500 text-sm font-medium">{title}</p>
+        <p className="text-2xl font-bold text-gray-800 mt-1">{value}</p>
+      </div>
     </div>
-    <div>
-      <p className="text-gray-500 text-sm font-medium">{title}</p>
-      <p className="text-2xl font-bold text-gray-800 mt-1">{value}</p>
-    </div>
-  </div>
-);
+  );
+};
+
+
 
 export default Adminhome;

@@ -46,10 +46,10 @@ export const ordervalidationschema=()=>{
           });
         }    
 
-  export const productvalidationschema=()=>Yup.object({
-    name:Yup.string().required("name is required"),
-    price:Yup.string().required("price is required"),
-    quantity:Yup.string().required("quantity is required"),
-    category:Yup.string().required("category is required"),
-    url:Yup.string().required("image is required")
-  })
+  export const productvalidationschema = Yup.object({
+  productName: Yup.string().required("Product name is required"),
+  price: Yup.number().required("Price is required").typeError("Price must be a number"),
+  quantity: Yup.number().required("Quantity is required").typeError("Quantity must be a number"),
+  categoryName: Yup.string().required("Category is required"), // ✅ now validate categoryName
+  description: Yup.string().required("Description is required"),
+});

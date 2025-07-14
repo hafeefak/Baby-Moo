@@ -1,17 +1,21 @@
 import { createContext, useState, useEffect } from "react";
-import api from "../../api/axiosConfig"; // ✅ secure axios instance
+import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
+import { getAuthToken, getUserData } from "../../Utils/Auth";
 
 export const Cartcontext = createContext();
 
 export default function Cartprovider({ children }) {
   const [cart, setCart] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
-  const userId = localStorage.getItem("id");
+
+  const token = getAuthToken();
+  const user = getUserData();
+  const userId = user?.id;
 
   useEffect(() => {
-    if (userId) fetchCart();
-  }, [userId]);
+    if (token && userId) fetchCart();
+  }, [token, userId]);
 
   const fetchCart = async () => {
     try {

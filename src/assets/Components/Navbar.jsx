@@ -1,91 +1,49 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { FaSearch, FaUser, FaShoppingBasket, FaBars, FaTimes, FaHeart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { Cartcontext } from '../Context/Cartcontext';
 import { Wishlistcontext } from '../Context/Wishlistcontext';
-import api from "../../api/axiosConfig";  // ✅ import your axios config
+import { toast } from 'react-toastify';
+import { AuthContext } from '../Context/Authcontext';
 
 function Navbar() {
   const [search, setSearch] = useState('');
-  const { cartCount } = useContext(Cartcontext);
-  const { wishlist } = useContext(Wishlistcontext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { cart } = useContext(Cartcontext);
+  const { wishlist } = useContext(Wishlistcontext);
+  const { user, role, logout } = useContext(AuthContext);
 
-  const [username, setUsername] = useState(null);
-  const [role, setRole] = useState(null);
-
+  const cartCount = cart?.length || 0;
   const navigate = useNavigate();
 
-  // ✅ Fetch user info on mount
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const id = localStorage.getItem('id');
-        if (!id) return;
-        const res = await api.get(`/users/${id}`);
-        setUsername(res.data.name);
-        setRole(res.data.role);
-      } catch (error) {
-        console.error('Failed to fetch user info:', error);
-        setUsername(null);
-        setRole(null);
-      }
-    };
-    fetchUser();
-  }, []);
+  const handleSearch = (e) => setSearch(e.target.value);
 
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
-  };
-
-  // ✅ Use api instead of fetch
   const handleSearchSubmit = async () => {
     try {
-      const res = await api.get(`/products/search?query=${search}`);
-      navigate('/search', { state: { result: search, products: res.data } });
+      // replace with your search API if needed
+      navigate('/search', { state: { result: search } });
     } catch (error) {
       console.error('Search failed:', error);
+      toast.error('Search failed, please try again.');
     }
-  };
-
-  const handleOrders = () => {
-    navigate('/orderlist');
-  };
-
-  const handleLogIn = () => {
-    navigate('/userlogin');
-  };
-
-  const handleAdminLogin = () => {
-    navigate('/adminlogin');
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    setUsername(null);
-    setRole(null);
-    navigate('/userlogin');
   };
 
   return (
     <nav className="bg-[#F5BAC7] shadow-lg flex items-center justify-between px-4 md:px-6 py-2 fixed w-full z-50 top-0 left-0">
       
-      {/* Mobile menu button */}
+      {/* Mobile menu */}
       <div className="lg:hidden">
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="text-white focus:outline-none"
+          className="text-white"
         >
           {isMobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
         </button>
       </div>
 
       {/* Logo */}
-      <div 
-        className="flex items-center cursor-pointer"
-        onClick={() => navigate('/')}
-      >
+      <div className="flex items-center cursor-pointer" onClick={() => navigate('/')}>
         <h3 className="font-bold text-white text-xl md:text-2xl lg:text-3xl hover:text-pink-100 transition duration-300">
           Baby Moo
         </h3>
@@ -112,7 +70,6 @@ function Navbar() {
 
       {/* Desktop Navigation */}
       <div className="hidden lg:flex items-center space-x-4">
-        
         {/* Cart */}
         <div 
           className="relative cursor-pointer text-pink-500 hover:text-pink-100 transition"
@@ -147,43 +104,43 @@ function Navbar() {
           >
             <div className="flex items-center bg-white bg-opacity-20 p-1.5 rounded-full">
               <FaUser className="text-gray-800" />
-              {username && <span className="ml-2 text-gray-800">{username}</span>}
+              {user?.name && <span className="ml-2 text-gray-800">{user.name}</span>}
             </div>
           </div>
 
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 bg-white border rounded-lg shadow-xl w-48 z-50 overflow-hidden">
               <ul>
-                {role === 'user' && (
+                {user && (
                   <li
                     className="px-4 py-2 text-gray-700 hover:bg-pink-50 transition"
-                    onClick={handleOrders}
+                    onClick={() => navigate('/my-orders')}
                   >
                     My Orders
                   </li>
                 )}
 
-                {!username && (
+                {!user && (
                   <>
                     <li
                       className="px-4 py-2 text-gray-700 hover:bg-pink-50 transition"
-                      onClick={handleLogIn}
+                      onClick={() => navigate('/userlogin')}
                     >
                       User Login
                     </li>
                     <li
                       className="px-4 py-2 text-gray-700 hover:bg-pink-50 transition"
-                      onClick={handleAdminLogin}
+                      onClick={() => navigate('/adminlogin')}
                     >
                       Admin Login
                     </li>
                   </>
                 )}
 
-                {username && (
+                {user && (
                   <li
                     className="px-4 py-2 text-gray-700 hover:bg-pink-50 transition"
-                    onClick={handleLogout}
+                    onClick={() => { logout(); navigate('/userlogin'); }}
                   >
                     Logout
                   </li>
@@ -235,33 +192,33 @@ function Navbar() {
             {role === 'user' && (
               <li
                 className="text-gray-700 py-2 hover:text-pink-600 transition"
-                onClick={handleOrders}
+                onClick={() => navigate('/orderlist')}
               >
                 My Orders
               </li>
             )}
 
-            {!username && (
+            {!user && (
               <>
                 <li
                   className="text-gray-700 py-2 hover:text-pink-600 transition"
-                  onClick={handleLogIn}
+                  onClick={() => navigate('/userlogin')}
                 >
                   User Login
                 </li>
                 <li
                   className="text-gray-700 py-2 hover:text-pink-600 transition"
-                  onClick={handleAdminLogin}
+                  onClick={() => navigate('/adminlogin')}
                 >
                   Admin Login
                 </li>
               </>
             )}
 
-            {username && (
+            {user && (
               <li
                 className="text-gray-700 py-2 hover:text-pink-600 transition"
-                onClick={handleLogout}
+                onClick={() => { logout(); navigate('/userlogin'); }}
               >
                 Logout
               </li>

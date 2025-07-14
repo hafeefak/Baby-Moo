@@ -1,18 +1,18 @@
 import { createContext, useState, useEffect } from "react";
-import api from "../../api/axiosConfig"; // ✅ your secure axios instance
+import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
+import { getAuthToken } from "../../Utils/Auth";
 
 export const Wishlistcontext = createContext();
 
 export default function Wishlistprovider({ children }) {
   const [wishlist, setWishlist] = useState([]);
-  const token = localStorage.getItem("token");
+  const token = getAuthToken();
 
   useEffect(() => {
     if (token) fetchWishlist();
   }, [token]);
 
-  // ✅ Fetch wishlist
   const fetchWishlist = async () => {
     try {
       const res = await api.get("/wishlist");
@@ -22,7 +22,6 @@ export default function Wishlistprovider({ children }) {
     }
   };
 
-  // ✅ Add product to wishlist
   const addToWishlist = async (productId) => {
     try {
       await api.post(`/wishlist/${productId}`);
@@ -34,7 +33,6 @@ export default function Wishlistprovider({ children }) {
     }
   };
 
-  // ✅ Remove product from wishlist
   const removeFromWishlist = async (productId) => {
     try {
       await api.delete(`/wishlist/${productId}`);
@@ -46,7 +44,6 @@ export default function Wishlistprovider({ children }) {
     }
   };
 
-  // ✅ Check if product is in wishlist
   const isInWishlist = (productId) =>
     wishlist.some(item => item.productId === productId);
 

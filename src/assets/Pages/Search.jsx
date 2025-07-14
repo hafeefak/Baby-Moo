@@ -7,55 +7,56 @@ import { Fetch } from '../Context/Fetchcontext';
 import { MdShoppingCart, MdClose } from 'react-icons/md';
 import { FaRupeeSign, FaHeart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import { isAuthenticated } from '../../Utils/Auth'; // ✅ use helper
 
 function SearchProduct() {
   const navigate = useNavigate();
   const location = useLocation();
   const result = location.state?.result || '';
-  const { productList } = useContext(Fetch);
+  const { productList = [] } = useContext(Fetch);
   const { addToCart } = useContext(Cartcontext);
   const { wishlist, addToWishlist, removeFromWishlist } = useContext(Wishlistcontext);
+
   const [filtered, setFiltered] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const token = localStorage.getItem('auth_token');
-
   useEffect(() => {
     const filteredProducts = productList.filter((product) =>
-      product.productName.toLowerCase().includes(result.toLowerCase()) ||
-      product.categoryName.toLowerCase().includes(result.toLowerCase())
+      product?.productName?.toLowerCase().includes(result.toLowerCase()) ||
+      product?.categoryName?.toLowerCase().includes(result.toLowerCase())
     );
     setFiltered(filteredProducts);
   }, [result, productList]);
 
-  const isInWishlist = (productId) => wishlist.some(item => item.productId === productId);
+  const isInWishlist = (productId) =>
+    wishlist?.some(item => item.productId === productId);
 
   const toggleWishlist = (product, e) => {
     e.stopPropagation();
-    if (token) {
-      if (isInWishlist(product.productId)) {
-        removeFromWishlist(product.productId);
-        toast.info(`${product.productName} removed from wishlist`);
-      } else {
-        addToWishlist(product.productId);
-        toast.success(`${product.productName} added to wishlist`);
-      }
-    } else {
+    if (!isAuthenticated()) {
       navigate('/userlogin');
       toast.info('Please login to manage wishlist');
+      return;
+    }
+    if (isInWishlist(product.productId)) {
+      removeFromWishlist(product.productId);
+      toast.info(`${product.productName} removed from wishlist`);
+    } else {
+      addToWishlist(product.productId);
+      toast.success(`${product.productName} added to wishlist`);
     }
   };
 
   const handleAddToCart = (product, e) => {
     e?.stopPropagation();
-    if (token) {
-      addToCart(product.productId, 1); // pass productId + quantity
-      toast.success(`${product.productName} added to cart`);
-      if (selectedProduct) setSelectedProduct(null);
-    } else {
+    if (!isAuthenticated()) {
       navigate('/userlogin');
       toast.info('Please login to add items to cart');
+      return;
     }
+    addToCart(product, 1); // pass product & quantity
+    toast.success(`${product.productName} added to cart`);
+    setSelectedProduct(null); // close modal
   };
 
   return (
@@ -147,7 +148,7 @@ function SearchProduct() {
               </div>
               <h2 className="text-2xl font-bold mb-2 text-gray-800">{selectedProduct.productName}</h2>
               <p className="text-gray-600 mb-4">{selectedProduct.description || "No description available."}</p>
-              <p className="text-l font-bold text-gray-500">Price</p>
+              <p className="text-sm font-bold text-gray-500">Price</p>
               <p className="text-xl font-bold text-pink-600 mb-6">
                 <FaRupeeSign className="inline mr-1" />
                 {Number(selectedProduct.price ?? 0).toFixed(2)}

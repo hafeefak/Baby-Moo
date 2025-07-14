@@ -1,11 +1,15 @@
+// src/assets/Admin/Adminprotect.jsx
 import { Navigate, Outlet } from "react-router-dom";
-import { isAuthenticated, isAdmin } from "../../Utils/Auth"; // adjust path if needed
+import { isAuthenticated, isAdmin } from "../../Utils/Auth";
 
-const Adminprotect = ({ children }) => {
-  // ✅ Check: must be logged in AND must be admin
-  const allowed = isAuthenticated() && isAdmin();
-
-  return allowed ? children : <Navigate to="/adminlogin" replace />;
+const Adminprotect = () => {
+  if (!isAuthenticated()) {
+    return <Navigate to="/adminlogin" replace />;
+  }
+  if (!isAdmin()) {
+    return <Navigate to="/" replace />; // non-admin users go to home
+  }
+  return <Outlet />;
 };
 
 export default Adminprotect;

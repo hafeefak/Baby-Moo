@@ -1,103 +1,87 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Components/Navbar';
 import { Cartcontext } from '../Context/Cartcontext';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import { MdDeleteOutline } from "react-icons/md";
 
 function Cart() {
+  const { cart, getTotalPrice, increaseQuantity, decreaseQuantity, removeFromCart } = useContext(Cartcontext);
   const navigate = useNavigate();
-  const { cart, getTotalPrice, updateCartItemQuantity, removeFromCart } = useContext(Cartcontext);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const token = localStorage.getItem('auth_token');
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    setIsLoggedIn(!!token);
+  }, []);
 
-  if (!cart || cart.length === 0) {
+  const handlePlaceOrder = () => {
+    if (!isLoggedIn) {
+      toast.info('Please login to place your order');
+      navigate('/userlogin');
+    } else {
+      navigate('/orders');
+    }
+  };
+
+  if (cart.length === 0) {
     return (
-      <div>
+      <div className="min-h-screen flex flex-col">
         <Navbar />
-        <div className="flex flex-col items-center justify-center h-full p-6 sm:p-10">
-          <h1 className="text-xl sm:text-2xl text-center mb-4 pt-16">Your cart is currently empty.</h1>
+        <div className="flex flex-1 flex-col justify-center items-center space-y-4">
+          <h2 className="text-xl font-semibold">🛒 Your cart is empty</h2>
           <button
-            onClick={() => navigate('/')}
-            className="bg-pink-400 text-white px-6 py-2 rounded-xl text-sm sm:text-lg"
+            onClick={() => navigate('/products')}
+            className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600"
           >
-            Shop Now
+            🛍️ Shop Now
           </button>
         </div>
+        <ToastContainer />
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="p-4 sm:p-10">
-        <h1 className="text-xl sm:text-3xl font-bold mb-6 text-center pt-16">Your Cart</h1>
-        <div>
-          {cart.map((item) => (
-            <div
-              key={item.productId}
-              className="flex flex-col sm:grid sm:grid-cols-6 items-center gap-4 sm:gap-6 border-b pb-4 sm:pb-6 mb-6"
-            >
-              <img
-                src={item.imageUrl}
-                alt={item.productName}
-                className="w-20 h-20 sm:w-32 sm:h-32 object-cover mx-auto"
-              />
+      <div className="max-w-4xl mx-auto mt-20 p-4 space-y-8 bg-white shadow rounded">
+        <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
 
-              <div className="text-center sm:col-span-2 sm:text-left">
-                <h2 className="text-lg sm:text-xl font-semibold">{item.productName}</h2>
-                <p className="text-gray-600">₹ {Number(item.price).toFixed(2)}</p>
-              </div>
-
-              <div className="flex items-center justify-center gap-2">
-                <button
-                  className="px-3 py-1 bg-gray-200 text-black rounded"
-                  onClick={() => updateCartItemQuantity(item.productId, item.quantity - 1)}
-                >
-                  -
-                </button>
-                <span>{item.quantity}</span>
-                <button
-                  className="px-3 py-1 bg-gray-200 text-black rounded"
-                  onClick={() => updateCartItemQuantity(item.productId, item.quantity + 1)}
-                >
-                  +
-                </button>
-              </div>
-
+        {cart.map(item => (
+          <div key={item.productId} className="flex justify-between items-center border-b py-2">
+            <div className="flex items-center space-x-2">
               <button
-                className="text-black hover:underline text-center"
+                onClick={() => decreaseQuantity(item.productId)}
+                className="px-3 py-1 bg-gray-200 font-bold text-lg rounded"
+              >−</button>
+              <span>{item.productName} x {item.quantity}</span>
+              <button
+                onClick={() => increaseQuantity(item.productId)}
+                className="px-3 py-1 bg-gray-200 font-bold text-lg rounded"
+              >+</button>
+              <MdDeleteOutline
+                className="text-red-500 cursor-pointer ml-2"
                 onClick={() => removeFromCart(item.productId)}
-              >
-                Remove
-              </button>
-
-              <p className="font-bold text-lg sm:text-xl text-center sm:text-right">
-                ₹ {(item.price * item.quantity).toFixed(2)}
-              </p>
+              />
             </div>
-          ))}
-        </div>
+            <div>₹ {(item.price * item.quantity).toFixed(2)}</div>
+          </div>
+        ))}
 
-        <div className="mt-6 flex flex-col sm:flex-row justify-center sm:justify-between items-center">
-          <button
-            onClick={() => {
-              if (token) {
-                navigate('/orders');
-              } else {
-                navigate('/userlogin');
-                toast.info('You need to login first.');
-              }
-            }}
-            className="bg-pink-400 text-white px-6 py-2 rounded-xl text-sm sm:text-lg mb-4 sm:mb-0"
-          >
-            PLACE YOUR ORDER
-          </button>
-          <p className="font-bold text-lg sm:text-xl">
-            Total: ₹ {Number(getTotalPrice()).toFixed(2)}
-          </p>
-        </div>
+        <div className="text-right font-bold mt-4">Total: ₹ {getTotalPrice().toFixed(2)}</div>
+
+        <button
+          onClick={handlePlaceOrder}
+          disabled={!isLoggedIn}
+          className={`w-full px-4 py-2 rounded text-white ${
+            isLoggedIn ? 'bg-pink-500 hover:bg-pink-600' : 'bg-gray-300 cursor-not-allowed'
+          }`}
+        >
+          Place Your Order
+        </button>
       </div>
+      <ToastContainer />
     </div>
   );
 }

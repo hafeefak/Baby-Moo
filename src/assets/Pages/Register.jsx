@@ -15,7 +15,7 @@ function Register() {
     username: '',
     email: '',
     password: '',
-    role: 'User'   // default backend role
+    role: 'User' // default role to send to backend
   };
 
   const onSubmit = async (values, { resetForm, setSubmitting }) => {
@@ -49,6 +49,7 @@ function Register() {
   return (
     <div className="signup scrollbar-y-hidden">
       <h1>Sign up</h1>
+      
       <Formik
         initialValues={initialValues}
         validationSchema={registervalidationschema}
@@ -101,7 +102,8 @@ function Register() {
           </Form>
         )}
       </Formik>
-      <ToastContainer />
+
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }

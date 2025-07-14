@@ -1,61 +1,38 @@
-import { createContext, useEffect, useState } from "react";
-import api from "../../api/axiosConfig"; // your secure axios instance
+import { createContext, useEffect, useState, useCallback } from "react";
+import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
+import { isAdmin } from "../../Utils/Auth";
 
 export const Admincontext = createContext();
 
 const Adminprovider = ({ children }) => {
   const [product, setProduct] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [totalRevenue, setTotalRevenue] = useState(0);
-  const [totalProductsSold, setTotalProductsSold] = useState(0);
-
- useEffect(() => {
   const token = localStorage.getItem("auth_token");
-  if (token) {
-    fetchProducts();
-    fetchTotalRevenue();
-    fetchTotalProductsSold();
-  }
-}, []);
 
-  // ✅ Fetch all products
-  const fetchProducts = async () => {
+  // Fetch products
+  const fetchProducts = useCallback(async () => {
     try {
-      const response = await api.get("/Product");
-      setProduct(response.data.data || []);
-      setCategories([
-        ...new Set(response.data.data.map((p) => p.categoryName))
-      ]);
+      const res = await api.get("/Product");
+      setProduct(res.data.data || []);
     } catch (error) {
-      console.error("Failed to fetch products:", error);
-      toast.error("Failed to fetch products");
+      if (![401, 403].includes(error.response?.status)) {
+        toast.error("Failed to fetch products");
+      }
     }
-  };
+  }, []);
 
-  // ✅ Fetch total revenue
-  const fetchTotalRevenue = async () => {
+  // Fetch categories
+  const fetchCategories = useCallback(async () => {
     try {
-      const res = await api.get("/orders/total-revenue");
-      setTotalRevenue(res.data.data || 0);
+      const res = await api.get("/Category");
+      setCategories(res.data.data || []);
     } catch (error) {
-      console.error("Failed to fetch revenue:", error);
-      toast.error("Failed to fetch revenue");
+      toast.error("Failed to fetch categories");
     }
-  };
+  }, []);
 
-  // ✅ Fetch total products sold
-  const fetchTotalProductsSold = async () => {
-    try {
-      const res = await api.get("/orders/total-products");
-      setTotalProductsSold(res.data.data || 0);
-    } catch (error) {
-      console.error("Failed to fetch total products:", error);
-      toast.error("Failed to fetch total products");
-    }
-  };
-
-  // ✅ Add new product
+  // Add product
   const AddProduct = async (newProduct) => {
     try {
       const formData = new FormData();
@@ -63,68 +40,85 @@ const Adminprovider = ({ children }) => {
       formData.append("Description", newProduct.description);
       formData.append("Price", newProduct.price);
       formData.append("Quantity", newProduct.quantity);
-      formData.append("CategoryId", newProduct.categoryId); // ✅ correct
-      formData.append("Image", newProduct.image); // file
+      formData.append("CategoryName", newProduct.categoryName); // ✅ direct use
+      formData.append("Image", newProduct.image);
 
       await api.post("/Product", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success("New product added successfully");
-      fetchProducts();
+      toast.success("✅ Product added!");
+      await fetchProducts();
     } catch (error) {
-      console.error("Failed to add product:", error);
-      toast.error(error.response?.data?.message || "Failed to add product");
+      console.error("AddProduct error:", error.response?.data || error.message);
+      toast.error("❌ Failed to add product");
     }
   };
 
-  // ✅ Edit product
-  const EditProduct = async (updatedProduct) => {
-    try {
-      const formData = new FormData();
-      formData.append("ProductId", updatedProduct.productId); // backend may need it
-      formData.append("ProductName", updatedProduct.productName);
-      formData.append("Description", updatedProduct.description);
-      formData.append("Price", updatedProduct.price);
-      formData.append("Quantity", updatedProduct.quantity);
-      formData.append("CategoryId", updatedProduct.categoryId); // ✅ correct
+  // Edit product
+ const EditProduct = async (updatedProduct) => {
+  try {
+    const formData = new FormData();
+    formData.append("ProductName", updatedProduct.productName);
+    formData.append("Description", updatedProduct.description);
+    formData.append("Price", updatedProduct.price);
+    formData.append("Quantity", updatedProduct.quantity);
+    formData.append("CategoryName", updatedProduct.categoryName);
 
-      if (updatedProduct.image instanceof File) {
-        formData.append("Image", updatedProduct.image);
-      }
-
-      await api.put(`/Product/${updatedProduct.productId}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
-      toast.success("Product updated successfully");
-      fetchProducts();
-    } catch (error) {
-      console.error("Failed to edit product:", error);
-      toast.error(error.response?.data?.message || "Failed to edit product");
+    if (updatedProduct.image instanceof File) {
+      formData.append("Image", updatedProduct.image);
     }
-  };
 
-  // ✅ Delete product
+    await api.put(`/Product/${updatedProduct.productId}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    toast.success("✅ Product updated!");
+    await fetchProducts();
+  } catch (error) {
+    console.error("EditProduct error:", error.response?.data || error);
+    toast.error("❌ Failed to update product");
+  }
+};
+
+
+  // Delete product
   const DeleteProduct = async (id) => {
     try {
       await api.delete(`/Product/${id}`);
-      toast.success("Product deleted successfully");
-      fetchProducts();
+      toast.success("✅ Product deleted!");
+      await fetchProducts();
     } catch (error) {
-      console.error("Failed to delete product:", error);
-      toast.error(error.response?.data?.message || "Failed to delete product");
+      toast.error("❌ Failed to delete product");
     }
   };
+
+  // Add category
+  const AddCategory = async (categoryName) => {
+    try {
+      await api.post("/Category", { categoryName });
+      toast.success("✅ Category added!");
+      await fetchCategories();
+    } catch (error) {
+      toast.error("❌ Failed to add category");
+    }
+  };
+
+  // Initial load
+  useEffect(() => {
+    if (token && isAdmin()) {
+      fetchProducts();
+      fetchCategories();
+    }
+  }, [token, fetchProducts, fetchCategories]);
 
   return (
     <Admincontext.Provider
       value={{
         product,
         categories,
-        totalRevenue,
-        totalProductsSold,
         AddProduct,
+        EditProduct,
         DeleteProduct,
-        EditProduct
+        AddCategory,
       }}
     >
       {children}

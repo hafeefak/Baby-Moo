@@ -1,102 +1,84 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Adminnavbar from './Adminnavbar';
-import { productvalidationschema } from '../Schema/Validationschema';
 import { Admincontext } from '../Context/Admincontxt';
+import { productvalidationschema } from '../Schema/Validationschema';
 import { HiFolderAdd } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Adminnavbar from './Adminnavbar';
+
+const initialValues = {
+  productName: "",
+  price: "",
+  quantity: "",
+  description: "",
+  categoryName: "",
+  image: null
+};
 
 function Adminproducts() {
-  const { product, categories, AddProduct, DeleteProduct, EditProduct } = useContext(Admincontext);
+  const { product, categories, AddProduct, EditProduct, DeleteProduct, AddCategory } = useContext(Admincontext);
   const [addproduct, setaddproduct] = useState(false);
   const [editproduct, seteditproduct] = useState(null);
   const [filterproduct, setfilterproduct] = useState([]);
   const [selectedcategory, setselectedcategory] = useState('All');
-
-  const initialValues = {
-    productName: "",
-    price: "",
-    quantity: "",
-    description: "",
-    categoryId: "",
-    image: null
-  };
+  const [addCategoryModal, setAddCategoryModal] = useState(false);
+  const [newCategory, setNewCategory] = useState("");
 
   useEffect(() => {
     setfilterproduct(product);
   }, [product]);
 
+  // Filter by category name
   const handlecategory = (e) => {
     const value = e.target.value;
     setselectedcategory(value);
     if (value === 'All') {
       setfilterproduct(product);
     } else {
-      setfilterproduct(product.filter((item) => item.categoryName === value));
+      setfilterproduct(product.filter((p) => p.categoryName === value));
     }
   };
 
-  const onSubmit = async (values, { resetForm }) => {
-    try {
-      const formData = new FormData();
-      formData.append("ProductName", values.productName);
-      formData.append("Price", values.price);
-      formData.append("Quantity", values.quantity);
-      formData.append("Description", values.description);
-      formData.append("CategoryId", values.categoryId);
-      formData.append("Image", values.image);
-      await AddProduct(formData);
-      toast.success('✅ Product added successfully!');
-      resetForm();
-      setaddproduct(false);
-    } catch {
-      toast.error('❌ Failed to add product');
-    }
+  // Submit handlers
+  const handleAddSubmit = async (values, { resetForm }) => {
+    await AddProduct(values);
+    resetForm();
+    setaddproduct(false);
   };
 
-  const editSubmit = async (values, { resetForm }) => {
-    try {
-      const formData = new FormData();
-      formData.append("ProductId", values.productId);
-      formData.append("ProductName", values.productName);
-      formData.append("Price", values.price);
-      formData.append("Quantity", values.quantity);
-      formData.append("Description", values.description);
-      formData.append("CategoryId", values.categoryId);
-      if (values.image instanceof File) {
-        formData.append("Image", values.image);
-      }
-      await EditProduct(formData);
-      toast.success('✅ Product updated successfully!');
-      resetForm();
-      seteditproduct(null);
-    } catch {
-      toast.error('❌ Failed to update product');
-    }
+  const handleEditSubmit = async (values, { resetForm }) => {
+    await EditProduct(values);
+    resetForm();
+    seteditproduct(null);
   };
 
   return (
     <div className="flex min-h-screen bg-gray-100">
       <ToastContainer position="top-center" autoClose={2500} />
+
       <div className="w-64 bg-white shadow-md fixed h-full overflow-y-auto">
         <Adminnavbar />
       </div>
+
       <div className="ml-64 w-full p-6">
         <h1 className="text-3xl font-bold mb-6 text-center">Products</h1>
 
         <div className="mb-6 flex justify-between items-center">
-          <select onChange={handlecategory} value={selectedcategory}
-            className="p-2 border rounded w-48">
+          <select onChange={handlecategory} value={selectedcategory} className="p-2 border rounded w-48">
             <option value="All">All</option>
-            {categories.map((c, idx) => (
-              <option key={idx} value={c}>{c}</option>
+            {categories.map((c) => (
+              <option key={c.categoryId} value={c.categoryName}>{c.categoryName}</option>
             ))}
           </select>
-          <HiFolderAdd className="text-5xl cursor-pointer hover:text-blue-800" onClick={() => setaddproduct(true)} />
+          <div className="flex items-center gap-3">
+            <HiFolderAdd className="text-5xl cursor-pointer hover:text-blue-800" onClick={() => setaddproduct(true)} />
+            <button onClick={() => setAddCategoryModal(true)} className="bg-blue-500 text-white px-3 py-1 rounded">+ Add Category</button>
+          </div>
         </div>
 
+        {/* Product Table */}
         <div className="overflow-x-auto bg-white shadow rounded mb-10">
           <table className="min-w-full">
             <thead>
@@ -118,7 +100,9 @@ function Adminproducts() {
                   <td className="px-6 py-4">₹ {p.price}</td>
                   <td className="px-6 py-4">{p.description}</td>
                   <td className="px-6 py-4">{p.categoryName}</td>
-                  <td className="py-4"><img className="w-20 h-20 object-cover" src={p.imageUrl} alt="" /></td>
+                  <td className="py-4">
+                    <img className="w-20 h-20 object-cover" src={p.imageUrl} alt="" />
+                  </td>
                   <td className="px-6 py-2 flex flex-col items-center gap-2">
                     <button className="bg-green-500 text-white px-4 py-1 rounded" onClick={() => seteditproduct(p)}>Edit</button>
                     <button className="bg-red-500 text-white px-4 py-1 rounded" onClick={() => DeleteProduct(p.productId)}>Delete</button>
@@ -129,224 +113,87 @@ function Adminproducts() {
           </table>
         </div>
 
-        {/* Add Product Modal - Updated Form Style */}
+        {/* Add Product Modal */}
         {addproduct && (
-          <Modal title="Add New Product" close={() => setaddproduct(false)}>
-            <Formik initialValues={initialValues} validationSchema={productvalidationschema} onSubmit={onSubmit}>
-              {({ setFieldValue, isSubmitting }) => (
-               <Form className="space-y-5">
-  <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-1">Product Name</label>
-    <Field 
-      name="productName"
-      placeholder="Enter product name"
-      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    <ErrorMessage name="productName" component="div" className="text-red-500 text-xs mt-1" />
-  </div>
-
-  <div className="grid grid-cols-2 gap-4">
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Price (₹)</label>
-      <Field 
-        name="price"
-        type="number"
-        placeholder="0.00"
-        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <ErrorMessage name="price" component="div" className="text-red-500 text-xs mt-1" />
-    </div>
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Quantity</label>
-      <Field 
-        name="quantity"
-        type="number"
-        placeholder="0"
-        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <ErrorMessage name="quantity" component="div" className="text-red-500 text-xs mt-1" />
-    </div>
-  </div>
-
-  <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-    <Field 
-      as="textarea"
-      name="description"
-      placeholder="Enter product description"
-      rows={3}
-      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    <ErrorMessage name="description" component="div" className="text-red-500 text-xs mt-1" />
-  </div>
-
-  <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-1">Category</label>
-    <Field 
-      as="select"
-      name="categoryId"
-      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    >
-      <option value="">Select Category</option>
-      {categories.map((c, idx) => (
-        <option key={idx} value={c.categoryId}>{c}</option>
-      ))}
-    </Field>
-    <ErrorMessage name="categoryId" component="div" className="text-red-500 text-xs mt-1" />
-  </div>
-
-  <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-1">Product Image</label>
-    <input 
-      type="file"
-      onChange={(e) => setFieldValue("image", e.target.files[0])}
-      className="block w-full text-sm text-gray-500
-        file:mr-4 file:py-2 file:px-4
-        file:rounded-md file:border-0
-        file:text-sm file:font-semibold
-        file:bg-blue-50 file:text-blue-700
-        hover:file:bg-blue-100"
-    />
-  </div>
-
-  <div className="flex justify-end gap-3 pt-2">
-    <button
-      type="button"
-      onClick={() => setaddproduct(false)}
-      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50"
-    >
-      Cancel
-    </button>
-    <button
-      type="submit"
-      disabled={isSubmitting}
-      className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
-    >
-      {isSubmitting ? 'Adding...' : 'Add Product'}
-    </button>
-  </div>
-</Form>
-
+          <Modal title="Add Product" close={() => setaddproduct(false)}>
+            <Formik initialValues={initialValues} validationSchema={productvalidationschema} onSubmit={handleAddSubmit}>
+              {({ setFieldValue }) => (
+                <Form className="space-y-2">
+                  <FieldBlock name="productName" label="Product Name" />
+                  <FieldRow>
+                    <FieldBlock name="price" label="Price (₹)" type="number" />
+                    <FieldBlock name="quantity" label="Quantity" type="number" />
+                  </FieldRow>
+                  <FieldBlock as="textarea" name="description" label="Description" rows={3} />
+                  <div>
+                    <label className="block mb-1 font-medium">Category</label>
+                    <Field as="select" name="categoryName" className="w-full border p-2 rounded">
+                      <option value="">Select Category</option>
+                      {categories.map((c) => (
+                        <option key={c.categoryId} value={c.categoryName}>{c.categoryName}</option>
+                      ))}
+                    </Field>
+                    <ErrorMessage name="categoryName" component="div" className="text-red-500 text-xs" />
+                  </div>
+                  <div>
+                    <label className="block mb-1 font-medium">Product Image</label>
+                    <input type="file" onChange={(e) => setFieldValue("image", e.target.files[0])} />
+                  </div>
+                  <ModalActions submitText="Add Product" onCancel={() => setaddproduct(false)} />
+                </Form>
               )}
             </Formik>
           </Modal>
         )}
 
-        {/* Edit Product Modal - Updated Form Style */}
+        {/* Edit Product Modal */}
         {editproduct && (
           <Modal title="Edit Product" close={() => seteditproduct(null)}>
-            <Formik 
-              initialValues={editproduct} 
-              validationSchema={productvalidationschema} 
-              onSubmit={editSubmit}
-              enableReinitialize
-            >
-              {({ setFieldValue, isSubmitting, values }) => (
-                <Form className="space-y-5">
-  <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-1">Product Name</label>
-    <Field 
-      name="productName"
-      placeholder="Enter product name"
-      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    <ErrorMessage name="productName" component="div" className="text-red-500 text-xs mt-1" />
-  </div>
+            <Formik initialValues={editproduct} validationSchema={productvalidationschema} onSubmit={handleEditSubmit} enableReinitialize>
+              {({ setFieldValue, values }) => (
+                <Form className="space-y-2">
+                  <FieldBlock name="productName" label="Product Name" />
+                  <FieldRow>
+                    <FieldBlock name="price" label="Price (₹)" type="number" />
+                    <FieldBlock name="quantity" label="Quantity" type="number" />
+                  </FieldRow>
+                  <FieldBlock as="textarea" name="description" label="Description" rows={3} />
+                  <div>
+                    <label className="block mb-1 font-medium">Category</label>
+                    <Field as="select" name="categoryName" className="w-full border p-2 rounded">
+               <option value="">Select Category</option>
+            {categories.map((c) => (
+              <option key={c.categoryId} value={c.categoryName}>{c.categoryName}</option>
+              ))}
+              </Field>
 
-  <div className="grid grid-cols-2 gap-4">
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Price (₹)</label>
-      <Field 
-        name="price"
-        type="number"
-        placeholder="0.00"
-        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <ErrorMessage name="price" component="div" className="text-red-500 text-xs mt-1" />
-    </div>
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Quantity</label>
-      <Field 
-        name="quantity"
-        type="number"
-        placeholder="0"
-        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <ErrorMessage name="quantity" component="div" className="text-red-500 text-xs mt-1" />
-    </div>
-  </div>
-
-  <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-    <Field 
-      as="textarea"
-      name="description"
-      placeholder="Enter product description"
-      rows={3}
-      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    <ErrorMessage name="description" component="div" className="text-red-500 text-xs mt-1" />
-  </div>
-
-  <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-1">Category</label>
-    <Field 
-      as="select"
-      name="categoryId"
-      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    >
-      <option value="">Select Category</option>
-      {categories.map((c, idx) => (
-        <option key={idx} value={c.categoryId}>{c}</option>
-      ))}
-    </Field>
-    <ErrorMessage name="categoryId" component="div" className="text-red-500 text-xs mt-1" />
-  </div>
-
-  <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-1">Product Image</label>
-    <div className="flex flex-col sm:flex-row items-start gap-4">
-      {values.imageUrl && (
-        <img 
-          src={values.imageUrl} 
-          alt="Current" 
-          className="w-28 h-28 object-contain border rounded"
-        />
-      )}
-      <input 
-        type="file"
-        onChange={(e) => setFieldValue("image", e.target.files[0])}
-        className="block w-full text-sm text-gray-500
-          file:mr-4 file:py-2 file:px-4
-          file:rounded-md file:border-0
-          file:text-sm file:font-semibold
-          file:bg-blue-50 file:text-blue-700
-          hover:file:bg-blue-100"
-      />
-    </div>
-    <p className="text-xs text-gray-500 mt-1">Leave blank to keep current image</p>
-  </div>
-
-  <div className="flex justify-end gap-3 pt-2">
-    <button
-      type="button"
-      onClick={() => seteditproduct(null)}
-      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50"
-    >
-      Cancel
-    </button>
-    <button
-      type="submit"
-      disabled={isSubmitting}
-      className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
-    >
-      {isSubmitting ? 'Updating...' : 'Update Product'}
-    </button>
-  </div>
-</Form>
-
+                  </div>
+                  <div>
+                    <label className="block mb-1 font-medium">Product Image</label>
+                    <div className="flex items-center gap-3">
+                      {values.imageUrl && <img src={values.imageUrl} alt="" className="w-20 h-20 object-cover rounded" />}
+                      <input type="file" onChange={(e) => setFieldValue("image", e.target.files[0])} />
+                    </div>
+                  </div>
+                  <ModalActions submitText="Update Product" onCancel={() => seteditproduct(null)} />
+                </Form>
               )}
             </Formik>
+          </Modal>
+        )}
+
+        {/* Add Category Modal */}
+        {addCategoryModal && (
+          <Modal title="Add New Category" close={() => setAddCategoryModal(false)}>
+            <div className="space-y-4">
+              <input type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder="Category name" className="w-full border p-2 rounded" />
+              <ModalActions submitText="Add Category" onCancel={() => setAddCategoryModal(false)} onSubmit={async () => {
+                if (!newCategory.trim()) return toast.error("Category name required");
+                await AddCategory(newCategory.trim());
+                setNewCategory("");
+                setAddCategoryModal(false);
+              }} />
+            </div>
           </Modal>
         )}
       </div>
@@ -354,16 +201,39 @@ function Adminproducts() {
   );
 }
 
-// Modal component remains the same as original
+// ✅ Helper components
 const Modal = ({ title, children, close }) => (
   <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
     <div className="bg-white p-4 rounded w-full max-w-md">
-      <div className="flex justify-between mb-4">
+      <div className="flex justify-between mb-2">
         <h2 className="font-semibold">{title}</h2>
-        <IoMdClose className="text-2xl cursor-pointer" onClick={close} />
+        <IoMdClose onClick={close} className="cursor-pointer text-xl" />
       </div>
       {children}
     </div>
+  </div>
+);
+
+const FieldBlock = ({ name, label, ...props }) => (
+  <div>
+    <label className="block mb-1 font-medium">{label}</label>
+    <Field name={name} {...props} className="w-full border p-2 rounded" />
+    <ErrorMessage name={name} component="div" className="text-red-500 text-xs" />
+  </div>
+);
+
+const FieldRow = ({ children }) => (
+  <div className="grid grid-cols-2 gap-4">{children}</div>
+);
+
+const ModalActions = ({ onCancel, submitText, onSubmit }) => (
+  <div className="flex justify-end gap-2">
+    <button type="button" onClick={onCancel} className="px-3 py-1 bg-gray-200 rounded">Cancel</button>
+    {onSubmit ? (
+      <button type="button" onClick={onSubmit} className="px-3 py-1 bg-blue-600 text-white rounded">{submitText}</button>
+    ) : (
+      <button type="submit" className="px-3 py-1 bg-blue-600 text-white rounded">{submitText}</button>
+    )}
   </div>
 );
 

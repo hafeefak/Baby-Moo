@@ -9,15 +9,26 @@ export const storeAuthData = (token, userData, role) => {
 };
 
 export const getAuthToken = () => localStorage.getItem(TOKEN_KEY);
+
 export const getUserData = () => {
   const data = localStorage.getItem(USER_KEY);
-  return data ? JSON.parse(data) : null;
+  if (!data) return null;    
+  try {
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Invalid JSON in USER_KEY:", error);
+    localStorage.removeItem(USER_KEY);
+    return null;
+  }
 };
+
 export const getUserRole = () => localStorage.getItem(ROLE_KEY);
+
 export const clearAuthData = () => {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
   localStorage.removeItem(ROLE_KEY);
 };
+
 export const isAuthenticated = () => !!getAuthToken();
 export const isAdmin = () => getUserRole() === 'Admin';

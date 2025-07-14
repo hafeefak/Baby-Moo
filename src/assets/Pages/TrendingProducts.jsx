@@ -2,58 +2,53 @@ import React, { useContext, useState } from 'react';
 import { FaHeart } from "react-icons/fa";
 import { MdClose, MdShoppingCart } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { Fetch } from '../Context/Fetchcontext';
 import { Wishlistcontext } from '../Context/Wishlistcontext';
 import { Cartcontext } from '../Context/Cartcontext';
 import Navbar from '../Components/Navbar';
+import { toast } from 'react-toastify';
+import { isAuthenticated } from '../../Utils/Auth'; // ✅ use helper
 
 const TrendingProducts = () => {
-  const { productList } = useContext(Fetch);
+  const { productList = [] } = useContext(Fetch);
   const { wishlist, addToWishlist, removeFromWishlist } = useContext(Wishlistcontext);
   const { addToCart } = useContext(Cartcontext);
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
 
-  // Take first 6 as trending (since backend doesn't flag them)
   const trendingProducts = productList.slice(0, 6);
 
-  const openModal = (product, e) => {
-    e.stopPropagation();
-    setSelectedProduct(product);
-  };
-
-  const closeModal = () => setSelectedProduct(null);
-
-  const handleAddToCart = (product, e) => {
-    e.stopPropagation();
-    if (localStorage.getItem("auth_token")) {
-      addToCart(product.productId, 1); // pass productId and quantity
-      toast.success(`${product.productName} added to cart`);
-    } else {
-      navigate("/userlogin");
-      toast.info("Please login to add items to cart");
-    }
-  };
+  const isInWishlist = (productId) =>
+    wishlist?.some(item => item.productId === productId);
 
   const toggleWishlist = (product, e) => {
     e.stopPropagation();
-    if (localStorage.getItem("auth_token")) {
-      if (wishlist.find(item => item.productId === product.productId)) {
-        removeFromWishlist(product.productId);
-        toast.info(`${product.productName} removed from wishlist`);
-      } else {
-        addToWishlist(product.productId);
-        toast.success(`${product.productName} added to wishlist`);
-      }
-    } else {
+    if (!isAuthenticated()) {
       navigate("/userlogin");
       toast.info("Please login to manage wishlist");
+      return;
+    }
+    if (isInWishlist(product.productId)) {
+      removeFromWishlist(product.productId);
+      toast.info(`${product.productName} removed from wishlist`);
+    } else {
+      addToWishlist(product.productId);
+      toast.success(`${product.productName} added to wishlist`);
     }
   };
 
-  const isInWishlist = (productId) => wishlist.some(item => item.productId === productId);
+  const handleAddToCart = (product, e) => {
+    e.stopPropagation();
+    if (!isAuthenticated()) {
+      navigate("/userlogin");
+      toast.info("Please login to add to cart");
+      return;
+    }
+    addToCart(product, 1);
+    toast.success(`${product.productName} added to cart`);
+    setSelectedProduct(null); // close modal after adding
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -76,7 +71,7 @@ const TrendingProducts = () => {
                   : <FaHeart size={18} className="opacity-40" />}
               </button>
 
-              <div onClick={(e) => openModal(product, e)} className="cursor-pointer">
+              <div onClick={() => setSelectedProduct(product)} className="cursor-pointer">
                 <img
                   src={product.imageUrl}
                   alt={product.productName}
@@ -117,7 +112,7 @@ const TrendingProducts = () => {
           <div className="bg-white rounded-xl relative max-w-md w-full flex flex-col">
             <MdClose
               className="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-800"
-              onClick={closeModal}
+              onClick={() => setSelectedProduct(null)}
               size={24}
             />
             <button
@@ -129,14 +124,14 @@ const TrendingProducts = () => {
                 : <FaHeart size={22} className="opacity-40" />}
             </button>
 
-            <div className="p-6 max-h-[80vh] flex-1">
+            <div className="p-6 max-h-[80vh] flex-1 overflow-y-auto">
               <img
                 src={selectedProduct.imageUrl}
                 alt={selectedProduct.productName}
                 className="w-full h-60 object-cover rounded-lg mb-4"
               />
               <h2 className="text-2xl font-bold mb-2 text-gray-800">{selectedProduct.productName}</h2>
-              <p className="text-gray-600 mb-4">{selectedProduct.description}</p>
+              <p className="text-gray-600 mb-4">{selectedProduct.description || "No description available."}</p>
               <p className="text-sm font-bold text-gray-500">Price</p>
               <p className="text-xl font-bold text-pink-600 mb-6">
                 ₹{Number(selectedProduct.price ?? 0).toFixed(2)}

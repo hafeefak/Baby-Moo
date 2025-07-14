@@ -2,72 +2,57 @@ import React, { useState, useContext } from 'react';
 import { MdClose, MdShoppingCart } from 'react-icons/md';
 import { FaRupeeSign, FaHeart } from 'react-icons/fa';
 import { useParams, useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
 import Navbar from '../Components/Navbar';
 import { Fetch } from '../Context/Fetchcontext';
 import { Wishlistcontext } from '../Context/Wishlistcontext';
-import api from "../../api/axiosConfig";  // ✅ secure axios instance
-import 'react-toastify/dist/ReactToastify.css';
+import { Cartcontext } from '../Context/Cartcontext';
 
 function Categorylist() {
   const { wishlist, addToWishlist, removeFromWishlist, isInWishlist } = useContext(Wishlistcontext);
-  const { productList } = useContext(Fetch);
+  const { addToCart } = useContext(Cartcontext);
+  const { productList = [] } = useContext(Fetch);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { categoryName } = useParams();
   const navigate = useNavigate();
-  const token = localStorage.getItem('auth_token');
 
-  // Filter products by category
-  const filteredProducts = productList?.filter(
-    (item) => item.categoryName?.toLowerCase() === categoryName?.toLowerCase()
-  ) || [];
+  // Filter products by category (case-insensitive)
+  const filteredProducts = productList.filter(
+    item => item.categoryName?.toLowerCase() === categoryName?.toLowerCase()
+  );
 
-  // ✅ Toggle wishlist using context methods
-  const toggleWishlist = async (product, e) => {
+  // Toggle wishlist
+  const toggleWishlist = (product, e) => {
     e.stopPropagation();
+    const token = localStorage.getItem('token');
     if (!token) {
       navigate('/userlogin');
       return;
     }
-    try {
-      if (isInWishlist(product.productId)) {
-        await removeFromWishlist(product.productId);
-        toast.info(`${product.productName} removed from wishlist`);
-      } else {
-        await addToWishlist(product.productId);
-        toast.success(`${product.productName} added to wishlist`);
-      }
-    } catch (error) {
-      toast.error('Something went wrong!');
+    if (isInWishlist(product.productId)) {
+      removeFromWishlist(product.productId);
+    } else {
+      addToWishlist(product.productId);
     }
   };
 
-  // ✅ Add to cart using secure axios
-  const handleAddToCart = async (product, e) => {
+  // Add to cart
+  const handleAddToCart = (product, e) => {
     e?.stopPropagation();
+    const token = localStorage.getItem('token');
     if (!token) {
       navigate('/userlogin');
       return;
     }
-    try {
-      await api.post("/cart", {
-        productId: product.productId,
-        quantity: 1
-      });
-      toast.success(`${product.productName} added to cart`);
-      setSelectedProduct(null);
-    } catch (error) {
-      console.error("Add to cart failed:", error);
-      toast.error(error.response?.data?.message || 'Failed to add to cart');
-    }
+    addToCart(product.productId, 1);
+    setSelectedProduct(null); // Close modal if open
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <ToastContainer position="top-center" autoClose={2000} />
 
       <div className="container mx-auto px-4 py-8 mt-20">
+        <h2 className="text-2xl font-bold mb-6 capitalize">{categoryName}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.map((product) => (
             <div
@@ -119,7 +104,7 @@ function Categorylist() {
         </div>
       </div>
 
-      {/* ✅ Modal */}
+      {/* Modal */}
       {selectedProduct && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
           <div className="bg-white rounded-xl relative max-w-md w-full flex flex-col">
@@ -139,13 +124,11 @@ function Categorylist() {
             </button>
 
             <div className="p-6 flex-1 max-h-[80vh] overflow-y-auto">
-              <div className="mb-4">
-                <img
-                  src={selectedProduct.imageUrl}
-                  alt={selectedProduct.productName}
-                  className="w-full h-60 object-cover rounded-lg"
-                />
-              </div>
+              <img
+                src={selectedProduct.imageUrl}
+                alt={selectedProduct.productName}
+                className="w-full h-60 object-cover rounded-lg mb-4"
+              />
               <h2 className="text-2xl font-bold mb-2 text-gray-800">{selectedProduct.productName}</h2>
               <p className="text-gray-600 mb-4">{selectedProduct.description || "No description available."}</p>
               <p className="text-sm font-bold text-gray-500">Price</p>

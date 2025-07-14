@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import api from '../../api/axiosConfig'; // ✅ your secure axios instance
+import React, { useEffect, useState, useCallback } from 'react';
+import api from '../../api/axiosConfig';
 import Adminnavbar from './Adminnavbar';
 import { IoMdClose } from 'react-icons/io';
 
@@ -7,7 +7,7 @@ function Adminuser() {
   const [users, setUsers] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
 
-  // ✅ Fetch all users on load
+  // ✅ Fetch users on mount
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -18,25 +18,26 @@ function Adminuser() {
       }
     };
     fetchUsers();
-  }, []);
+  }, []); // no dependencies => only runs once on mount
 
-  console.log(users);
-
-  // ✅ Toggle block/unblock user
-  const handleStatus = async (id, blocked, event) => {
+  // ✅ Toggle block/unblock user (useCallback to keep stable ref)
+  const handleStatus = useCallback(async (id, blocked, event) => {
     event.stopPropagation();
     try {
       await api.put(`User/users/block/${id}`);
       setUsers((prev) =>
-        prev.map((user) => user.userId === id ? { ...user, blocked: !blocked} : user)
+        prev.map((user) =>
+          user.userId === id ? { ...user, blocked: !blocked } : user
+        )
       );
     } catch (error) {
       console.error("Failed to update status:", error);
     }
-  };
+  }, []);
 
-  const openModal = (user) => setUserDetails(user);
-  const closeModal = () => setUserDetails(null);
+  // ✅ Modal handlers (also stable)
+  const openModal = useCallback((user) => setUserDetails(user), []);
+  const closeModal = useCallback(() => setUserDetails(null), []);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -60,10 +61,10 @@ function Adminuser() {
                   <button
                     onClick={(event) => handleStatus(user.userId, user.blocked, event)}
                     className={`py-1 px-4 rounded text-white font-medium ${
-                    user.blocked ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
-                  }`}
->
-                  {user.blocked ? 'UnBlock' : 'Block'}   
+                      user.blocked ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
+                    }`}
+                  >
+                    {user.blocked ? 'UnBlock' : 'Block'}
                   </button>
                 </td>
               </tr>

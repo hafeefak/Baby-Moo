@@ -6,15 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { MdShoppingCart, MdDeleteOutline, MdFavorite } from "react-icons/md";
 import { FiArrowRight } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { isAuthenticated } from "../../Utils/Auth";
 
 const Wishlist = () => {
   const { wishlist, removeFromWishlist } = useContext(Wishlistcontext);
   const { addToCart } = useContext(Cartcontext);
   const navigate = useNavigate();
 
-  const handleAddToCart = (product) => {
-    if (localStorage.getItem("token")) {
-      addToCart(product.productId, 1);  // use backend productId
+  const handleAddToCart = (product, e) => {
+    e.stopPropagation();
+    if (isAuthenticated()) {
+      addToCart(product, 1);
       toast.success(`${product.productName} added to cart`);
     } else {
       navigate("/userlogin");
@@ -50,10 +52,10 @@ const Wishlist = () => {
               </p>
               <button
                 onClick={() => navigate("/")}
-                className="bg-pink-500 hover:bg-pink-600 text-white font-medium px-6 py-3 rounded-full shadow-sm transition-all duration-200 inline-flex items-center transform hover:-translate-y-0.5"
+                className="bg-pink-500 hover:bg-pink-600 text-white font-medium px-6 py-3 rounded-full shadow-sm transition-all duration-200 inline-flex items-center"
               >
                 Continue Shopping
-                <FiArrowRight className="ml-2 transition-transform group-hover:translate-x-1" />
+                <FiArrowRight className="ml-2" />
               </button>
             </div>
           </section>
@@ -69,7 +71,6 @@ const Wishlist = () => {
                     src={product.imageUrl}
                     alt={product.productName}
                     className="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
                   />
                   <div className="p-5 flex flex-col flex-1">
                     <h3 className="text-lg font-semibold text-gray-800 line-clamp-2 mb-2">
@@ -80,15 +81,15 @@ const Wishlist = () => {
                     </p>
                     <div className="mt-auto grid grid-cols-2 gap-2">
                       <button
-                        onClick={() => handleAddToCart(product)}
-                        className="flex items-center justify-center py-3 px-4 rounded-lg text-sm font-medium bg-pink-500 text-white hover:bg-pink-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 hover:shadow-md"
+                        onClick={(e) => handleAddToCart(product, e)}
+                        className="flex items-center justify-center py-3 px-4 rounded-lg text-sm font-medium bg-pink-500 text-white hover:bg-pink-600"
                       >
                         <MdShoppingCart className="mr-2" size={16} />
                         Cart
                       </button>
                       <button
                         onClick={() => removeFromWishlist(product.productId)}
-                        className="flex items-center justify-center py-3 px-4 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-red-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+                        className="flex items-center justify-center py-3 px-4 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-red-500"
                       >
                         <MdDeleteOutline size={16} />
                         Remove
